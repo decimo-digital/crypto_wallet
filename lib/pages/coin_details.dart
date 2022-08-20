@@ -2,7 +2,6 @@ import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
 import 'package:mrx_charts/mrx_charts.dart';
 import 'package:timeago/timeago.dart' as timeago;
@@ -31,184 +30,6 @@ class _CoinDetailsState extends State<CoinDetails> {
             5.0;
   }
 
-  List<ChartLayer> layers() => [
-        ChartHighlightLayer(
-          shape: () => ChartHighlightLineShape<ChartLineDataItem>(
-            backgroundColor:
-                Theme.of(context).colorScheme.primary.withOpacity(.48),
-            currentPos: (item) => item.currentValuePos,
-            radius: const BorderRadius.all(Radius.circular(8.0)),
-            width: 30,
-          ),
-        ),
-        ChartAxisLayer(
-          settings: ChartAxisSettings(
-            x: ChartAxisSettingsAxis(
-              frequency: _frequency,
-              max: _dateTo.millisecondsSinceEpoch.toDouble(),
-              min: _dateFrom.millisecondsSinceEpoch.toDouble(),
-              textStyle: TextStyle(
-                color: Colors.white.withOpacity(0.6),
-                fontSize: 10.0,
-              ),
-            ),
-            y: ChartAxisSettingsAxis(
-              frequency: 100.0,
-              max: 400.0,
-              min: 0.0,
-              textStyle: TextStyle(
-                color: Colors.white.withOpacity(0.6),
-                fontSize: 10.0,
-              ),
-            ),
-          ),
-          labelX: (val) {
-            final date = DateTime.fromMillisecondsSinceEpoch(
-              val.toInt(),
-            );
-            if (date.difference(DateTime.now()).inHours.abs() >= 48) {
-              return DateFormat('dd/MM').format(date);
-            }
-            return timeago.format(date, locale: 'it');
-          },
-          labelY: (val) => NumberFormat.compactCurrency(
-            locale: 'it',
-            symbol: '€',
-          ).format(val),
-        ),
-        ChartGridLayer(
-          settings: ChartGridSettings(
-            x: ChartGridSettingsAxis(
-              color: Theme.of(context).colorScheme.onBackground,
-              frequency: 10,
-              max: 100,
-              min: 0,
-              thickness: .3,
-            ),
-            y: ChartGridSettingsAxis(
-              color: Theme.of(context).colorScheme.onBackground,
-              frequency: 1,
-              max: 10,
-              min: 0,
-              thickness: .3,
-            ),
-          ),
-        ),
-        ChartLineLayer(
-          items: List.generate(
-            4,
-            (index) => ChartLineDataItem(
-              x: _dateFrom.add(Duration(days: index)).millisecondsSinceEpoch *
-                  1.0,
-              value: Random().nextInt(380) + 20,
-            ),
-          ),
-          settings: ChartLineSettings(
-            color: Theme.of(context).colorScheme.primary,
-            thickness: 4.0,
-          ),
-        ),
-        ChartTooltipLayer(
-          shape: () => ChartTooltipLineShape<ChartLineDataItem>(
-            backgroundColor: Colors.white,
-            circleBackgroundColor: Colors.white,
-            circleBorderColor: Theme.of(context).colorScheme.primary,
-            circleSize: 4.0,
-            circleBorderThickness: 2.0,
-            currentPos: (item) => item.currentValuePos,
-            onTextValue: (item) =>
-                NumberFormat.compactCurrency(locale: 'it', symbol: '€')
-                    .format(item.value),
-            marginBottom: 6.0,
-            padding: const EdgeInsets.symmetric(
-              horizontal: 12.0,
-              vertical: 8.0,
-            ),
-            radius: 6.0,
-            textStyle: TextStyle(
-              color: Theme.of(context).colorScheme.primary,
-              letterSpacing: 0.2,
-              fontSize: 14.0,
-              fontWeight: FontWeight.w700,
-            ),
-            triangleSideLength: 12,
-          ),
-        ),
-      ];
-
-  dynamic foo() {
-    return [
-      ChartHighlightLayer(
-        shape: () => ChartHighlightLineShape<ChartLineDataItem>(
-          backgroundColor: const Color(0xFF331B6D),
-          currentPos: (item) => item.currentValuePos,
-          radius: const BorderRadius.all(Radius.circular(8.0)),
-          width: 60.0,
-        ),
-      ),
-      ChartAxisLayer(
-        labelX: (val) {
-          final date = DateTime.fromMillisecondsSinceEpoch(
-            val.toInt(),
-          );
-          if (date.difference(DateTime.now()).inHours.abs() >= 48) {
-            return DateFormat('dd/MM').format(date);
-          }
-          return timeago.format(date, locale: 'it');
-        },
-        labelY: (val) => NumberFormat.compactCurrency(
-          locale: 'it',
-          symbol: '€',
-        ).format(val),
-        settings: ChartAxisSettings(
-          x: ChartAxisSettingsAxis(
-            textStyle: GoogleFonts.montserrat(),
-            frequency: _frequency,
-            max: _dateTo.millisecondsSinceEpoch * 1.0,
-            min: _dateFrom.millisecondsSinceEpoch * 1.0,
-          ),
-          y: ChartAxisSettingsAxis(
-            textStyle: GoogleFonts.montserrat(),
-            frequency: 1,
-            max: 10,
-            min: 0,
-          ),
-        ),
-      ),
-      ChartGridLayer(
-        settings: ChartGridSettings(
-          x: ChartGridSettingsAxis(
-            color: Theme.of(context).colorScheme.onBackground,
-            frequency: 10,
-            max: 100,
-            min: 0,
-            thickness: .6,
-          ),
-          y: ChartGridSettingsAxis(
-            color: Theme.of(context).colorScheme.onBackground,
-            frequency: 1,
-            max: 10,
-            min: 0,
-            thickness: .6,
-          ),
-        ),
-      ),
-      ChartLineLayer(
-        items: List.generate(
-          4,
-          (index) => ChartLineDataItem(
-            x: (index * _frequency) + _dateFrom.millisecondsSinceEpoch,
-            value: Random().nextInt(380) + 20,
-          ),
-        ),
-        settings: const ChartLineSettings(
-          color: Colors.white,
-          thickness: 4,
-        ),
-      ),
-    ];
-  }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -221,7 +42,117 @@ class _CoinDetailsState extends State<CoinDetails> {
               child: Center(
                 child: Chart(
                   duration: const Duration(milliseconds: 250),
-                  layers: layers(),
+                  layers: [
+                    ChartHighlightLayer(
+                      shape: () => ChartHighlightLineShape<ChartLineDataItem>(
+                        backgroundColor: Theme.of(context)
+                            .colorScheme
+                            .primary
+                            .withOpacity(.48),
+                        currentPos: (item) => item.currentValuePos,
+                        radius: const BorderRadius.all(Radius.circular(8.0)),
+                        width: 30,
+                      ),
+                    ),
+                    ChartAxisLayer(
+                      settings: ChartAxisSettings(
+                        x: ChartAxisSettingsAxis(
+                          frequency: _frequency,
+                          max: _dateTo.millisecondsSinceEpoch.toDouble(),
+                          min: _dateFrom.millisecondsSinceEpoch.toDouble(),
+                          textStyle: TextStyle(
+                            color: Colors.white.withOpacity(0.6),
+                            fontSize: 10.0,
+                          ),
+                        ),
+                        y: ChartAxisSettingsAxis(
+                          frequency: 100.0,
+                          max: 400.0,
+                          min: 0.0,
+                          textStyle: TextStyle(
+                            color: Colors.white.withOpacity(0.6),
+                            fontSize: 10.0,
+                          ),
+                        ),
+                      ),
+                      labelX: (val) {
+                        final date = DateTime.fromMillisecondsSinceEpoch(
+                          val.toInt(),
+                        );
+                        if (date.difference(DateTime.now()).inHours.abs() >=
+                            48) {
+                          return DateFormat('dd/MM').format(date);
+                        }
+                        return timeago.format(date, locale: 'it');
+                      },
+                      labelY: (val) => NumberFormat.compactCurrency(
+                        locale: 'it',
+                        symbol: '€',
+                      ).format(val),
+                    ),
+                    ChartGridLayer(
+                      settings: ChartGridSettings(
+                        x: ChartGridSettingsAxis(
+                          color: Theme.of(context).colorScheme.onBackground,
+                          frequency: 10,
+                          max: 100,
+                          min: 0,
+                          thickness: .3,
+                        ),
+                        y: ChartGridSettingsAxis(
+                          color: Theme.of(context).colorScheme.onBackground,
+                          frequency: 1,
+                          max: 10,
+                          min: 0,
+                          thickness: .3,
+                        ),
+                      ),
+                    ),
+                    ChartLineLayer(
+                      items: List.generate(
+                        4,
+                        (index) => ChartLineDataItem(
+                          x: _dateFrom
+                                  .add(Duration(days: index))
+                                  .millisecondsSinceEpoch *
+                              1.0,
+                          value: Random().nextInt(380) + 20,
+                        ),
+                      ),
+                      settings: ChartLineSettings(
+                        color: Theme.of(context).colorScheme.primary,
+                        thickness: 4.0,
+                      ),
+                    ),
+                    ChartTooltipLayer(
+                      shape: () => ChartTooltipLineShape<ChartLineDataItem>(
+                        backgroundColor: Colors.white,
+                        circleBackgroundColor: Colors.white,
+                        circleBorderColor:
+                            Theme.of(context).colorScheme.primary,
+                        circleSize: 4.0,
+                        circleBorderThickness: 2.0,
+                        currentPos: (item) => item.currentValuePos,
+                        onTextValue: (item) => NumberFormat.compactCurrency(
+                          locale: 'it',
+                          symbol: '€',
+                        ).format(item.value),
+                        marginBottom: 6.0,
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 12.0,
+                          vertical: 8.0,
+                        ),
+                        radius: 6.0,
+                        textStyle: TextStyle(
+                          color: Theme.of(context).colorScheme.primary,
+                          letterSpacing: 0.2,
+                          fontSize: 14.0,
+                          fontWeight: FontWeight.w700,
+                        ),
+                        triangleSideLength: 12,
+                      ),
+                    ),
+                  ],
                 ),
               ),
             ),
