@@ -49,7 +49,8 @@ class _LoginPageState extends State<LoginPage> {
               ),
             ),
             ElevatedButton(
-              onPressed: () => context.go(context.namedLocation(Routes.homepage.name)),
+              onPressed: () =>
+                  context.go(context.namedLocation(Routes.homepage.name)),
               child: const Text('Login'),
             ),
             Flexible(
@@ -105,7 +106,8 @@ class _LoginPageState extends State<LoginPage> {
               child: Align(
                 alignment: Alignment.bottomCenter,
                 child: TextButton(
-                  onPressed: () => context.pushNamed(Routes.decentralizedLogin.name),
+                  onPressed: () =>
+                      context.pushNamed(Routes.decentralizedLogin.name),
                   child: const Text('Continue with passphrase'),
                 ),
               ),

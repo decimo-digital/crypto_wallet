@@ -9,7 +9,8 @@ class SwapTokens extends StatefulWidget {
 }
 
 class _SwapTokensState extends State<SwapTokens> {
-  final _topSelected = ValueNotifier(_tokens.first.icon);
+  final _sourceToken = ValueNotifier(_tokens.first.icon);
+  final _targetToken = ValueNotifier(_tokens.first.icon);
 
   @override
   Widget build(BuildContext context) {
@@ -24,7 +25,7 @@ class _SwapTokensState extends State<SwapTokens> {
                 mainAxisSize: MainAxisSize.min,
                 children: [
                   ValueListenableBuilder<IconData>(
-                    valueListenable: _topSelected,
+                    valueListenable: _sourceToken,
                     builder: (context, value, _) => DropdownButton<IconData>(
                       items: _tokens
                           .map(
@@ -47,7 +48,7 @@ class _SwapTokensState extends State<SwapTokens> {
                             ),
                           )
                           .toList(),
-                      onChanged: (val) => _topSelected.value = val ?? value,
+                      onChanged: (val) => _sourceToken.value = val ?? value,
                       alignment: Alignment.center,
                       underline: Container(),
                       itemHeight: kMinInteractiveDimension,
@@ -85,7 +86,7 @@ class _SwapTokensState extends State<SwapTokens> {
                 mainAxisSize: MainAxisSize.min,
                 children: [
                   ValueListenableBuilder<IconData>(
-                    valueListenable: _topSelected,
+                    valueListenable: _targetToken,
                     builder: (context, value, _) => DropdownButton<IconData>(
                       items: _tokens
                           .map(
@@ -108,7 +109,7 @@ class _SwapTokensState extends State<SwapTokens> {
                             ),
                           )
                           .toList(),
-                      onChanged: (val) => _topSelected.value = val ?? value,
+                      onChanged: (val) => _targetToken.value = val ?? value,
                       alignment: Alignment.center,
                       underline: Container(),
                       itemHeight: kMinInteractiveDimension,

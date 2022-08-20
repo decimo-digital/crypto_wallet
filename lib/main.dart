@@ -4,9 +4,11 @@ import 'package:crypto_wallet/pages/homepage/homepage.dart';
 import 'package:crypto_wallet/pages/login_page.dart';
 import 'package:crypto_wallet/pages/settings.dart';
 import 'package:crypto_wallet/pages/signup/signup_page.dart';
+import 'package:crypto_wallet/utils/short_it_lookup_messages.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:timeago/timeago.dart';
 
 enum Routes {
   login._('login'),
@@ -22,6 +24,7 @@ enum Routes {
 }
 
 void main() {
+  setLocaleMessages('it', ShortLookupItMessages());
   runApp(MyApp());
 }
 
