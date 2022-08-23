@@ -22,9 +22,9 @@ class DataService {
           }
         }
       }
-      return tokenList;
     } else {
       throw Exception('Failed to load token list');
     }
+    return tokenList;
   }
 }
