@@ -2,6 +2,9 @@ import 'package:crypto_wallet/main.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
+import '../model/token_data_market.dart';
+import '../service/data_service.dart';
+
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
 
@@ -10,6 +13,8 @@ class LoginPage extends StatefulWidget {
 }
 
 class _LoginPageState extends State<LoginPage> {
+  List<Token> listToken = <Token>[];
+  final service = DataService();
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -73,10 +78,12 @@ class _LoginPageState extends State<LoginPage> {
             ElevatedButtonTheme(
               data: ElevatedButtonThemeData(
                 style: ElevatedButton.styleFrom(
+                  foregroundColor: Colors.black.withOpacity(.56),
                   textStyle: const TextStyle(
                     fontSize: 18,
                     fontWeight: FontWeight.bold,
                   ),
+                  backgroundColor: Colors.white,
                   padding: const EdgeInsets.symmetric(
                     vertical: 15,
                     horizontal: 50,
@@ -84,8 +91,6 @@ class _LoginPageState extends State<LoginPage> {
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(10),
                   ),
-                  primary: Colors.white,
-                  onPrimary: Colors.black.withOpacity(.56),
                 ),
               ),
               child: ElevatedButton(
@@ -107,8 +112,9 @@ class _LoginPageState extends State<LoginPage> {
               child: Align(
                 alignment: Alignment.bottomCenter,
                 child: TextButton(
-                  onPressed: () =>
-                      context.pushNamed(Routes.decentralizedLogin.name),
+                  onPressed: () async {
+                    context.pushNamed(Routes.decentralizedLogin.name);
+                  },
                   child: const Text('Continue with passphrase'),
                 ),
               ),

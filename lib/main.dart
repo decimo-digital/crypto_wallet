@@ -102,7 +102,7 @@ class MyApp extends StatelessWidget {
         ),
         textButtonTheme: TextButtonThemeData(
           style: TextButton.styleFrom(
-            primary: Colors.white,
+            foregroundColor: Colors.white,
             textStyle: GoogleFonts.montserrat(
               fontSize: 18,
               fontWeight: FontWeight.bold,

@@ -7,7 +7,10 @@ import 'package:mrx_charts/mrx_charts.dart';
 import 'package:timeago/timeago.dart' as timeago;
 
 class CoinDetails extends StatefulWidget {
-  const CoinDetails({required this.coinId, super.key});
+  const CoinDetails({
+    required this.coinId,
+    super.key,
+  });
 
   final String coinId;
 

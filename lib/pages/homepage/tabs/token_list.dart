@@ -21,6 +21,7 @@ class _TokenListState extends State<TokenList> {
   void initState() {
     super.initState();
     getToken();
+    debugPrint('Tokens loaded');
     print(listToken.length.toString());
   }
 
@@ -30,101 +31,111 @@ class _TokenListState extends State<TokenList> {
 
   @override
   Widget build(BuildContext context) {
-    return CustomScrollView(
-      slivers: [
-        SliverToBoxAdapter(
-          child: SizedBox(
-            height: 70,
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Text(
-                  'Favorites',
-                  style: Theme.of(context).textTheme.bodyText1,
-                ),
-                Flexible(
-                  child: ListView(
-                    scrollDirection: Axis.horizontal,
-                    children: [
-                      Padding(
-                        padding: const EdgeInsets.only(right: 5),
-                        child: Chip(
-                          backgroundColor: const Color(0xFFE4E4E4),
-                          avatar: const CircleAvatar(
-                            backgroundColor: Colors.transparent,
-                            child: Icon(FontAwesomeIcons.bitcoin),
-                          ),
-                          label: const Text(
-                            '€ 2500',
-                            style: TextStyle(
-                              fontSize: 13,
-                              fontWeight: FontWeight.bold,
-                              color: Colors.green,
-                            ),
-                          ),
-                          onDeleted: () {},
-                          deleteIconColor: Colors.black,
-                        ),
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.only(right: 5),
-                        child: Chip(
-                          backgroundColor: const Color(0xFFE4E4E4),
-                          avatar: const CircleAvatar(
-                            backgroundColor: Colors.transparent,
-                            child: Icon(FontAwesomeIcons.ethereum),
-                          ),
-                          label: const Text(
-                            '€ 190',
-                            style: TextStyle(
-                              fontSize: 13,
-                              fontWeight: FontWeight.bold,
-                              color: Colors.red,
-                            ),
-                          ),
-                          onDeleted: () {},
-                          deleteIconColor: Colors.black,
-                        ),
-                      ),
-                    ],
+    debugPrint('I tokens sono ${listToken.length}');
+    return RefreshIndicator(
+      onRefresh: () async {
+        getToken();
+        debugPrint('I tokens dopo il refresh sono ${listToken.length}');
+        debugPrint('TOKENS: ${listToken.first.name}');
+      },
+      child: CustomScrollView(
+        slivers: [
+          SliverToBoxAdapter(
+            child: SizedBox(
+              height: 70,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Text(
+                    'Favorites',
+                    style: Theme.of(context).textTheme.bodyText1,
                   ),
-                ),
-              ],
+                  Flexible(
+                    child: ListView(
+                      scrollDirection: Axis.horizontal,
+                      children: [
+                        Padding(
+                          padding: const EdgeInsets.only(right: 5),
+                          child: Chip(
+                            backgroundColor: const Color(0xFFE4E4E4),
+                            avatar: const CircleAvatar(
+                              backgroundColor: Colors.transparent,
+                              child: Icon(FontAwesomeIcons.bitcoin),
+                            ),
+                            label: const Text(
+                              '€ 2500',
+                              style: TextStyle(
+                                fontSize: 13,
+                                fontWeight: FontWeight.bold,
+                                color: Colors.green,
+                              ),
+                            ),
+                            onDeleted: () {},
+                            deleteIconColor: Colors.black,
+                          ),
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.only(right: 5),
+                          child: Chip(
+                            backgroundColor: const Color(0xFFE4E4E4),
+                            avatar: const CircleAvatar(
+                              backgroundColor: Colors.transparent,
+                              child: Icon(FontAwesomeIcons.ethereum),
+                            ),
+                            label: const Text(
+                              '€ 190',
+                              style: TextStyle(
+                                fontSize: 13,
+                                fontWeight: FontWeight.bold,
+                                color: Colors.red,
+                              ),
+                            ),
+                            onDeleted: () {},
+                            deleteIconColor: Colors.black,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
             ),
           ),
-        ),
-        SliverList(
-          delegate: SliverChildBuilderDelegate(
-            (context, index) {
-              var currentToken = listToken[index];
-              return Card(
-                child: ListTile(
-                  title: Text(currentToken.name!),
-                  subtitle: Text(currentToken.currentPrice.toString()),
-                  leading: CircleAvatar(
-                    backgroundColor: Colors.transparent,
-                    child: Image.network(currentToken.image!),
+          SliverList(
+            delegate: SliverChildBuilderDelegate(
+              (context, index) {
+                var currentToken = listToken[index];
+                return Card(
+                  child: ListTile(
+                    title: Text(currentToken.name),
+                    subtitle: Text(currentToken.currentPrice.toString()),
+                    leading: CircleAvatar(
+                      backgroundColor: Colors.transparent,
+                      child: Image.network(currentToken.image),
+                    ),
+                    trailing: IconButton(
+                      icon: const Icon(Icons.star),
+                      onPressed: () {},
+                    ),
+                    onTap: () {
+                      context.push(
+                        context.namedLocation(
+                          Routes.coinDetails.name,
+                          params: {
+                            'coin': currentToken.id.toString(),
+                          },
+                        ),
+                      );
+                    },
                   ),
-                  trailing: IconButton(
-                    icon: const Icon(Icons.star),
-                    onPressed: () {},
-                  ),
-                  onTap: () {
-                    context.push(
-                      context.namedLocation(
-                        Routes.coinDetails.name,
-                        params: {'coin': 'BTC'},
-                      ),
-                    );
-                  },
-                ),
-              );
-            },
-            childCount: listToken.length,
+                );
+              },
+              childCount: listToken.length,
+            ),
           ),
-        ),
-      ],
+        ],
+      ),
     );
   }
 }
