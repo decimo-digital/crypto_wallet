@@ -1,9 +1,11 @@
 import 'package:crypto_wallet/main.dart';
+import 'package:crypto_wallet/model/favorite_tokens.dart';
 import 'package:crypto_wallet/service/data_service.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:go_router/go_router.dart';
+import 'package:hive_flutter/hive_flutter.dart';
 
 import '../../../model/token_data_market.dart';
 
@@ -17,6 +19,7 @@ class TokenList extends StatefulWidget {
 class _TokenListState extends State<TokenList>
     with AutomaticKeepAliveClientMixin {
   final _tokens = ValueNotifier<List<Token>>([]);
+  final _favoriteTokens = ValueNotifier(FavoriteTokens);
   final service = DataService();
 
   @override
@@ -59,50 +62,57 @@ class _TokenListState extends State<TokenList>
                     style: Theme.of(context).textTheme.bodyText1,
                   ),
                   Flexible(
-                    child: ListView(
-                      scrollDirection: Axis.horizontal,
-                      children: [
-                        Padding(
-                          padding: const EdgeInsets.only(right: 5),
-                          child: Chip(
-                            backgroundColor: const Color(0xFFE4E4E4),
-                            avatar: const CircleAvatar(
-                              backgroundColor: Colors.transparent,
-                              child: Icon(FontAwesomeIcons.bitcoin),
-                            ),
-                            label: const Text(
-                              '€ 2500',
-                              style: TextStyle(
-                                fontSize: 13,
-                                fontWeight: FontWeight.bold,
-                                color: Colors.green,
+                    child: ValueListenableBuilder(
+                      valueListenable:
+                          Hive.box<FavoriteTokens>('favoriteTokensBox')
+                              .listenable(),
+                      builder: (context, value, _) {
+                        return ListView(
+                          scrollDirection: Axis.horizontal,
+                          children: [
+                            Padding(
+                              padding: const EdgeInsets.only(right: 5),
+                              child: Chip(
+                                backgroundColor: const Color(0xFFE4E4E4),
+                                avatar: const CircleAvatar(
+                                  backgroundColor: Colors.transparent,
+                                  child: Icon(FontAwesomeIcons.bitcoin),
+                                ),
+                                label: const Text(
+                                  '€ 2500',
+                                  style: TextStyle(
+                                    fontSize: 13,
+                                    fontWeight: FontWeight.bold,
+                                    color: Colors.green,
+                                  ),
+                                ),
+                                onDeleted: () {},
+                                deleteIconColor: Colors.black,
                               ),
                             ),
-                            onDeleted: () {},
-                            deleteIconColor: Colors.black,
-                          ),
-                        ),
-                        Padding(
-                          padding: const EdgeInsets.only(right: 5),
-                          child: Chip(
-                            backgroundColor: const Color(0xFFE4E4E4),
-                            avatar: const CircleAvatar(
-                              backgroundColor: Colors.transparent,
-                              child: Icon(FontAwesomeIcons.ethereum),
-                            ),
-                            label: const Text(
-                              '€ 190',
-                              style: TextStyle(
-                                fontSize: 13,
-                                fontWeight: FontWeight.bold,
-                                color: Colors.red,
+                            Padding(
+                              padding: const EdgeInsets.only(right: 5),
+                              child: Chip(
+                                backgroundColor: const Color(0xFFE4E4E4),
+                                avatar: const CircleAvatar(
+                                  backgroundColor: Colors.transparent,
+                                  child: Icon(FontAwesomeIcons.ethereum),
+                                ),
+                                label: const Text(
+                                  '€ 190',
+                                  style: TextStyle(
+                                    fontSize: 13,
+                                    fontWeight: FontWeight.bold,
+                                    color: Colors.red,
+                                  ),
+                                ),
+                                onDeleted: () {},
+                                deleteIconColor: Colors.black,
                               ),
                             ),
-                            onDeleted: () {},
-                            deleteIconColor: Colors.black,
-                          ),
-                        ),
-                      ],
+                          ],
+                        );
+                      },
                     ),
                   ),
                 ],

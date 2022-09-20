@@ -5,6 +5,7 @@ class Token {
     required this.symbol,
     required this.image,
     required this.currentPrice,
+    required this.isFavorite,
   });
 
   String id;
@@ -12,6 +13,7 @@ class Token {
   String symbol;
   String image;
   double currentPrice;
+  bool isFavorite;
 
   factory Token.fromJson(Map<String, dynamic> json) => Token(
         id: json['id'],
@@ -19,5 +21,6 @@ class Token {
         symbol: json['symbol'],
         image: json['image'],
         currentPrice: json['current_price'].toDouble(),
+        isFavorite: json['favorite'],
       );
 }

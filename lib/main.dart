@@ -1,3 +1,4 @@
+import 'package:crypto_wallet/model/favorite_tokens.dart';
 import 'package:crypto_wallet/pages/coin_details.dart';
 import 'package:crypto_wallet/pages/decentralized_signin.dart';
 import 'package:crypto_wallet/pages/homepage/homepage.dart';
@@ -8,6 +9,7 @@ import 'package:crypto_wallet/utils/short_it_lookup_messages.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:hive_flutter/hive_flutter.dart';
 import 'package:timeago/timeago.dart';
 
 enum Routes {
@@ -23,8 +25,13 @@ enum Routes {
   final String name;
 }
 
-void main() {
+void main() async {
   setLocaleMessages('it', ShortLookupItMessages());
+  await Hive.initFlutter();
+  Hive.registerAdapter(FavoriteTokensAdapter());
+
+  await Hive.openBox<FavoriteTokens>('favoriteTokensBox');
+
   runApp(MyApp());
 }
 
