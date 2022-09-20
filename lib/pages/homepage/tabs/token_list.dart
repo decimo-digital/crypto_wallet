@@ -1,6 +1,7 @@
 import 'package:crypto_wallet/main.dart';
 import 'package:crypto_wallet/service/data_service.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/scheduler.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:go_router/go_router.dart';
 
@@ -13,30 +14,36 @@ class TokenList extends StatefulWidget {
   State<TokenList> createState() => _TokenListState();
 }
 
-class _TokenListState extends State<TokenList> {
-  List<Token> listToken = <Token>[];
+class _TokenListState extends State<TokenList>
+    with AutomaticKeepAliveClientMixin {
+  final _tokens = ValueNotifier<List<Token>>([]);
   final service = DataService();
 
   @override
   void initState() {
-    super.initState();
     getToken();
+    super.initState();
     debugPrint('Tokens loaded');
-    print(listToken.length.toString());
   }
 
-  void getToken() async {
-    listToken = await service.fetchToken();
+  Future<void> getToken() async {
+    final tokens = await service.fetchToken();
+    debugPrint('Loaded ${tokens.length} tokens from api');
+    //_tokens.value = [];
+    if (SchedulerBinding.instance.schedulerPhase == SchedulerPhase.idle) {
+      _tokens.value = tokens;
+    } else {
+      SchedulerBinding.instance.addPostFrameCallback((timeStamp) {
+        _tokens.value = tokens;
+      });
+    }
   }
 
   @override
   Widget build(BuildContext context) {
-    debugPrint('I tokens sono ${listToken.length}');
     return RefreshIndicator(
       onRefresh: () async {
-        getToken();
-        debugPrint('I tokens dopo il refresh sono ${listToken.length}');
-        debugPrint('TOKENS: ${listToken.first.name}');
+        await getToken();
       },
       child: CustomScrollView(
         slivers: [
@@ -102,40 +109,49 @@ class _TokenListState extends State<TokenList> {
               ),
             ),
           ),
-          SliverList(
-            delegate: SliverChildBuilderDelegate(
-              (context, index) {
-                var currentToken = listToken[index];
-                return Card(
-                  child: ListTile(
-                    title: Text(currentToken.name),
-                    subtitle: Text(currentToken.currentPrice.toString()),
-                    leading: CircleAvatar(
-                      backgroundColor: Colors.transparent,
-                      child: Image.network(currentToken.image),
-                    ),
-                    trailing: IconButton(
-                      icon: const Icon(Icons.star),
-                      onPressed: () {},
-                    ),
-                    onTap: () {
-                      context.push(
-                        context.namedLocation(
-                          Routes.coinDetails.name,
-                          params: {
-                            'coin': currentToken.id.toString(),
-                          },
+          ValueListenableBuilder<List<Token>>(
+            valueListenable: _tokens,
+            builder: (context, listone, _) {
+              debugPrint('rebuilding with ${listone.length} items');
+              return SliverList(
+                delegate: SliverChildBuilderDelegate(
+                  (context, index) {
+                    final currentToken = listone[index];
+                    return Card(
+                      child: ListTile(
+                        title: Text(currentToken.name),
+                        subtitle: Text(currentToken.currentPrice.toString()),
+                        leading: CircleAvatar(
+                          backgroundColor: Colors.transparent,
+                          child: Image.network(currentToken.image),
                         ),
-                      );
-                    },
-                  ),
-                );
-              },
-              childCount: listToken.length,
-            ),
+                        trailing: IconButton(
+                          icon: const Icon(Icons.star),
+                          onPressed: () {},
+                        ),
+                        onTap: () {
+                          context.push(
+                            context.namedLocation(
+                              Routes.coinDetails.name,
+                              params: {
+                                'coin': currentToken.id.toString(),
+                              },
+                            ),
+                          );
+                        },
+                      ),
+                    );
+                  },
+                  childCount: listone.length,
+                ),
+              );
+            },
           ),
         ],
       ),
     );
   }
+
+  @override
+  bool get wantKeepAlive => true;
 }
