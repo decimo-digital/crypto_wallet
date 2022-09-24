@@ -1,4 +1,5 @@
 import 'package:crypto_wallet/main.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
@@ -62,7 +63,10 @@ class _SettingsState extends State<Settings> {
               child: Align(
                 alignment: Alignment.bottomCenter,
                 child: ElevatedButton(
-                  onPressed: () => context.goNamed(Routes.login.name),
+                  onPressed: () {
+                    FirebaseAuth.instance.signOut();
+                    context.goNamed(Routes.login.name);
+                  },
                   child: const Text('Logout'),
                 ),
               ),

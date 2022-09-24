@@ -1,4 +1,8 @@
+import 'package:crypto_wallet/main.dart';
+import 'package:crypto_wallet/service/data_service.dart';
 import 'package:flutter/material.dart';
+import 'package:email_validator/email_validator.dart';
+import 'package:go_router/go_router.dart';
 
 class CentralizedSignup extends StatefulWidget {
   const CentralizedSignup({super.key});
@@ -8,6 +12,17 @@ class CentralizedSignup extends StatefulWidget {
 }
 
 class _CentralizedSignupState extends State<CentralizedSignup> {
+  final _emailController = TextEditingController();
+  final _passwordController = TextEditingController();
+  DataService service = DataService();
+
+  @override
+  void dispose() {
+    _emailController.dispose();
+    _passwordController.dispose();
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
     return FractionallySizedBox(
@@ -19,20 +34,31 @@ class _CentralizedSignupState extends State<CentralizedSignup> {
             'Email and password registration',
             style: Theme.of(context).textTheme.bodyText1,
           ),
-          const Padding(
-            padding: EdgeInsets.symmetric(horizontal: 25),
-            child: TextField(
-              decoration: InputDecoration(hintText: 'Email'),
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 25),
+            child: TextFormField(
+              decoration: const InputDecoration(
+                hintText: 'Email',
+              ),
+              controller: _emailController,
+              validator: (email) =>
+                  email != null && !EmailValidator.validate(email)
+                      ? 'Enter a valida mail please'
+                      : null,
             ),
           ),
-          const Padding(
-            padding: EdgeInsets.symmetric(horizontal: 25),
-            child: TextField(
-              decoration: InputDecoration(hintText: 'Password'),
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 25),
+            child: TextFormField(
+              decoration: const InputDecoration(hintText: 'Password'),
+              controller: _passwordController,
             ),
           ),
           ElevatedButton(
-            onPressed: () {},
+            onPressed: () async {
+              service.signUp(_emailController, _passwordController);
+              context.go(context.namedLocation(Routes.homepage.name));
+            },
             child: const Text('Register'),
           ),
           Flexible(
@@ -56,10 +82,12 @@ class _CentralizedSignupState extends State<CentralizedSignup> {
           ElevatedButtonTheme(
             data: ElevatedButtonThemeData(
               style: ElevatedButton.styleFrom(
+                foregroundColor: Colors.black.withOpacity(.56),
                 textStyle: const TextStyle(
                   fontSize: 18,
                   fontWeight: FontWeight.bold,
                 ),
+                backgroundColor: Colors.white,
                 padding: const EdgeInsets.symmetric(
                   vertical: 15,
                   horizontal: 50,
@@ -67,8 +95,6 @@ class _CentralizedSignupState extends State<CentralizedSignup> {
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(10),
                 ),
-                primary: Colors.white,
-                onPrimary: Colors.black.withOpacity(.56),
               ),
             ),
             child: ElevatedButton(
