@@ -11,6 +11,7 @@ import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:timeago/timeago.dart';
+import 'package:firebase_core/firebase_core.dart';
 
 enum Routes {
   login._('login'),
@@ -25,7 +26,9 @@ enum Routes {
   final String name;
 }
 
-void main() async {
+Future<void> main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp();
   setLocaleMessages('it', ShortLookupItMessages());
   await Hive.initFlutter();
   Hive.registerAdapter(FavoriteTokensAdapter());

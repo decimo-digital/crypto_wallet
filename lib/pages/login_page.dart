@@ -1,8 +1,8 @@
 import 'package:crypto_wallet/main.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
-import '../model/token_data_market.dart';
 import '../service/data_service.dart';
 
 class LoginPage extends StatefulWidget {
@@ -13,8 +13,25 @@ class LoginPage extends StatefulWidget {
 }
 
 class _LoginPageState extends State<LoginPage> {
-  List<Token> listToken = <Token>[];
   final service = DataService();
+  final emailController = TextEditingController();
+  final passwordController = TextEditingController();
+  late final signInData;
+
+  @override
+  void dispose() {
+    emailController.dispose();
+    passwordController.dispose();
+    super.dispose();
+  }
+
+  Future signIn() async {
+    await FirebaseAuth.instance.signInWithEmailAndPassword(
+      email: emailController.text.trim(),
+      password: passwordController.text.trim(),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -36,25 +53,29 @@ class _LoginPageState extends State<LoginPage> {
               'Use email and password',
               style: Theme.of(context).textTheme.bodyText1,
             ),
-            const Padding(
-              padding: EdgeInsets.symmetric(horizontal: 25),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 25),
               child: TextField(
-                decoration: InputDecoration(
+                decoration: const InputDecoration(
                   hintText: 'Email',
                 ),
+                controller: emailController,
               ),
             ),
-            const Padding(
-              padding: EdgeInsets.symmetric(horizontal: 25),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 25),
               child: TextField(
-                decoration: InputDecoration(
+                decoration: const InputDecoration(
                   hintText: 'Password',
                 ),
                 obscureText: true,
+                controller: passwordController,
               ),
             ),
             ElevatedButton(
               onPressed: () async {
+                signIn();
+
                 context.go(context.namedLocation(Routes.homepage.name));
               },
               child: const Text('Login'),
