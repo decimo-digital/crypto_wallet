@@ -13,6 +13,8 @@ import 'package:hive_flutter/hive_flutter.dart';
 import 'package:timeago/timeago.dart';
 import 'package:firebase_core/firebase_core.dart';
 
+import 'model/token_data_market.dart';
+
 enum Routes {
   login._('login'),
   decentralizedLogin._('decentralized'),
@@ -32,8 +34,10 @@ Future<void> main() async {
   setLocaleMessages('it', ShortLookupItMessages());
   await Hive.initFlutter();
   Hive.registerAdapter(FavoriteTokensAdapter());
+  Hive.registerAdapter(TokenAdapter());
 
-  await Hive.openBox<FavoriteTokens>('favoriteTokensBox');
+  await Hive.openBox<Token>('tokensBox');
+  await Hive.openBox<FavoriteTokens>('favTokens');
 
   runApp(MyApp());
 }

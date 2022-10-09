@@ -15,6 +15,7 @@ class _CentralizedSignupState extends State<CentralizedSignup> {
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
   DataService service = DataService();
+  final _formKey = GlobalKey<FormState>();
 
   @override
   void dispose() {
@@ -34,29 +35,37 @@ class _CentralizedSignupState extends State<CentralizedSignup> {
             'Email and password registration',
             style: Theme.of(context).textTheme.bodyText1,
           ),
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 25),
-            child: TextFormField(
-              decoration: const InputDecoration(
-                hintText: 'Email',
-              ),
-              controller: _emailController,
-              validator: (email) =>
-                  email != null && !EmailValidator.validate(email)
-                      ? 'Enter a valida mail please'
-                      : null,
-            ),
-          ),
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 25),
-            child: TextFormField(
-              decoration: const InputDecoration(hintText: 'Password'),
-              controller: _passwordController,
+          Form(
+            key: _formKey,
+            child: Column(
+              children: [
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 25),
+                  child: TextFormField(
+                    decoration: const InputDecoration(
+                      hintText: 'Email',
+                    ),
+                    controller: _emailController,
+                    validator: (email) =>
+                        email != null && !EmailValidator.validate(email)
+                            ? 'Enter a valid mail'
+                            : null,
+                  ),
+                ),
+                const Padding(padding: EdgeInsets.only(top: 10)),
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 25),
+                  child: TextFormField(
+                    decoration: const InputDecoration(hintText: 'Password'),
+                    controller: _passwordController,
+                  ),
+                ),
+              ],
             ),
           ),
           ElevatedButton(
             onPressed: () async {
-              service.signUp(_emailController, _passwordController);
+              service.signUp(_emailController, _passwordController, context);
               context.go(context.namedLocation(Routes.homepage.name));
             },
             child: const Text('Register'),

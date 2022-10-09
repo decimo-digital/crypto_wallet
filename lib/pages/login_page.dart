@@ -1,4 +1,5 @@
 import 'package:crypto_wallet/main.dart';
+import 'package:email_validator/email_validator.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
@@ -15,6 +16,7 @@ class _LoginPageState extends State<LoginPage> {
   final service = DataService();
   final emailController = TextEditingController();
   final passwordController = TextEditingController();
+  final _formKey = GlobalKey<FormState>();
 
   @override
   void dispose() {
@@ -44,30 +46,55 @@ class _LoginPageState extends State<LoginPage> {
               'Use email and password',
               style: Theme.of(context).textTheme.bodyText1,
             ),
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 25),
-              child: TextField(
-                decoration: const InputDecoration(
-                  hintText: 'Email',
-                ),
-                controller: emailController,
-              ),
-            ),
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 25),
-              child: TextField(
-                decoration: const InputDecoration(
-                  hintText: 'Password',
-                ),
-                obscureText: true,
-                controller: passwordController,
+            Form(
+              key: _formKey,
+              child: Column(
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 25),
+                    child: TextFormField(
+                      decoration: const InputDecoration(
+                        hintText: 'Email',
+                      ),
+                      controller: emailController,
+                      validator: (email) {
+                        if (email!.isEmpty || !EmailValidator.validate(email)) {
+                          return 'Enter a valid mail';
+                        }
+                        return null;
+                      },
+                    ),
+                  ),
+                  const Padding(padding: EdgeInsets.only(top: 10)),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 25,
+                    ),
+                    child: TextFormField(
+                      decoration: const InputDecoration(
+                        hintText: 'Password',
+                      ),
+                      obscureText: true,
+                      controller: passwordController,
+                      validator: (psw) =>
+                          psw!.isEmpty ? 'Enter a password' : null,
+                    ),
+                  ),
+                ],
               ),
             ),
             ElevatedButton(
               onPressed: () async {
-                service.signIn(emailController, passwordController);
-
-                context.go(context.namedLocation(Routes.homepage.name));
+                if (_formKey.currentState!.validate()) {
+                  final user = await service.signIn(
+                    emailController,
+                    passwordController,
+                    context,
+                  );
+                  if (user != null) {
+                    context.go(context.namedLocation(Routes.homepage.name));
+                  }
+                }
               },
               child: const Text('Login'),
             ),

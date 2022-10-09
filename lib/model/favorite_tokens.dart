@@ -1,5 +1,7 @@
-import 'package:crypto_wallet/model/token_data_market.dart';
 import 'package:hive/hive.dart';
+
+import 'my_token.dart';
+import 'token_data_market.dart';
 part 'favorite_tokens.g.dart';
 
 @HiveType(typeId: 0)

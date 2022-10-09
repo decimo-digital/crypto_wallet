@@ -25,23 +25,30 @@ class DataService {
         .toList();
   }
 
-  Future signIn(
+  Future<UserCredential?> signIn(
     TextEditingController email,
     TextEditingController password,
+    BuildContext context,
   ) async {
+    UserCredential? user;
     try {
-      await FirebaseAuth.instance.signInWithEmailAndPassword(
+      user = await FirebaseAuth.instance.signInWithEmailAndPassword(
         email: email.text.trim(),
         password: password.text.trim(),
       );
     } on FirebaseException catch (error) {
-      print(error);
+      ScaffoldMessenger.of(context)
+          .showSnackBar(SnackBar(content: Text('${error.message}')));
+      debugPrint('$error');
+      user = null;
     }
+    return user;
   }
 
   Future signUp(
     TextEditingController email,
     TextEditingController password,
+    BuildContext context,
   ) async {
     try {
       await FirebaseAuth.instance.createUserWithEmailAndPassword(
@@ -49,8 +56,12 @@ class DataService {
         password: password.text.trim(),
       );
     } on FirebaseException catch (error) {
-      print(error);
+      ScaffoldMessenger.of(context)
+          .showSnackBar(SnackBar(content: Text('${error.message}')));
+      debugPrint('$error');
     }
+
+    //context.go(context.namedLocation(Routes.homepage.name));
   }
 
   Future<User> getFirebaseUser() async {
