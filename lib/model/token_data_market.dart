@@ -28,8 +28,26 @@ class Token {
   @HiveField(4)
   double currentPrice;
 
-  @HiveField(5)
+  @HiveField(5, defaultValue: false)
   bool? isFavorite;
+
+  Token copyWith({
+    String? id,
+    String? name,
+    String? symbol,
+    String? image,
+    double? currenPrice,
+    bool? isFavorite,
+  }) {
+    return Token(
+      id: id ?? this.id,
+      name: name ?? this.name,
+      symbol: symbol ?? this.symbol,
+      image: image ?? this.image,
+      currentPrice: currentPrice,
+      isFavorite: isFavorite ?? this.isFavorite,
+    );
+  }
 
   factory Token.fromJson(Map<String, dynamic> json) => Token(
         id: json['id'],

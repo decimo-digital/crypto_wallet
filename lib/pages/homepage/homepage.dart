@@ -28,7 +28,7 @@ class _HomepageState extends State<Homepage> with TickerProviderStateMixin {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Ciao ${FirebaseAuth.instance.currentUser!.email}'),
+        title: Text('${FirebaseAuth.instance.currentUser!.email}'),
         actions: [
           Padding(
             padding: const EdgeInsets.only(right: 5),

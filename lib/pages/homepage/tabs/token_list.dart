@@ -31,16 +31,20 @@ class _TokenListState extends State<TokenList>
 
   Future<void> getToken() async {
     final tokens = await service.fetchToken();
+    for (var element in tokens) {
+      Hive.box<Token>('tokensBox').put(element.id, element);
+    }
+
     debugPrint('Loaded ${tokens.length} tokens from api');
 
     if (SchedulerBinding.instance.schedulerPhase == SchedulerPhase.idle) {
       _tokens.value = tokens;
-      _tokens.value.map((e) => Hive.box<Token>('tokensBox').add(e));
+
       debugPrint(Hive.box<Token>('tokensBox').values.toString());
     } else {
       SchedulerBinding.instance.addPostFrameCallback((timeStamp) {
         _tokens.value = tokens;
-        _tokens.value.map((e) => Hive.box<Token>('tokensBox').add(e));
+
         debugPrint(Hive.box<Token>('tokensBox').values.toString());
       });
     }
@@ -50,7 +54,8 @@ class _TokenListState extends State<TokenList>
   Widget build(BuildContext context) {
     debugPrint(Hive.box<Token>('tokensBox').values.toString());
     debugPrint(_tokens.value.length.toString());
-
+    _tokens.value.map((element) => Hive.box<Token>('tokensBox').add(element));
+    debugPrint(Hive.box<Token>('tokensBox').values.toString());
     return RefreshIndicator(
       onRefresh: () async {
         await getToken();
@@ -60,7 +65,7 @@ class _TokenListState extends State<TokenList>
         builder: (context, box, _) {
           final myTokensList = box.values.toList();
           final myFavTokens = box.values
-              .where((element) => element.isFavorite == true)
+              .where((element) => element.isFavorite == false)
               .toList();
 
           return CustomScrollView(
@@ -104,7 +109,7 @@ class _TokenListState extends State<TokenList>
                                   );
                                 }),
                               )
-                            : const SizedBox(),
+                            : const SizedBox(child: Text('Non hai preferiti')),
                       ),
                     ],
                   ),
@@ -122,23 +127,21 @@ class _TokenListState extends State<TokenList>
                           backgroundColor: Colors.transparent,
                           child: Image.network(currentToken.image),
                         ),
-                        trailing: ValueListenableBuilder(
-                          valueListenable:
-                              isFavorite, // qui si prendera' il valore della hive box dei preferiti del token corrente
-                          builder: (context, value, _) {
-                            return IconButton(
-                              icon: isFavorite.value
-                                  ? const Icon(Icons.star)
-                                  : const Icon(
-                                      Icons.star_outline,
-                                      color: Colors.black,
-                                    ),
-                              color: isFavorite.value
-                                  ? Colors.orange
-                                  : Colors.white,
-                              onPressed: () {
-                                isFavorite.value = !isFavorite.value;
-                              },
+                        trailing: IconButton(
+                          icon: currentToken.isFavorite == true
+                              ? const Icon(Icons.star)
+                              : const Icon(
+                                  Icons.star_outline,
+                                  color: Colors.black,
+                                ),
+                          color: currentToken.isFavorite == true
+                              ? Colors.orange
+                              : Colors.white,
+                          onPressed: () {
+                            var isFavNow =
+                                currentToken.isFavorite == true ? false : true;
+                            currentToken.copyWith(
+                              isFavorite: isFavNow,
                             );
                           },
                         ),
