@@ -10,7 +10,7 @@ class Token {
     required this.symbol,
     required this.image,
     required this.currentPrice,
-    this.isFavorite,
+    required this.isFavorite,
   });
 
   @HiveField(0)
@@ -28,7 +28,7 @@ class Token {
   @HiveField(4)
   double currentPrice;
 
-  @HiveField(5, defaultValue: false)
+  @HiveField(5)
   bool? isFavorite;
 
   Token copyWith({
@@ -36,7 +36,7 @@ class Token {
     String? name,
     String? symbol,
     String? image,
-    double? currenPrice,
+    double? currentPrice,
     bool? isFavorite,
   }) {
     return Token(
@@ -44,7 +44,7 @@ class Token {
       name: name ?? this.name,
       symbol: symbol ?? this.symbol,
       image: image ?? this.image,
-      currentPrice: currentPrice,
+      currentPrice: currentPrice ?? this.currentPrice,
       isFavorite: isFavorite ?? this.isFavorite,
     );
   }
@@ -55,5 +55,6 @@ class Token {
         symbol: json['symbol'],
         image: json['image'],
         currentPrice: json['current_price'].toDouble(),
+        isFavorite: json['isFavorite'] ?? false,
       );
 }

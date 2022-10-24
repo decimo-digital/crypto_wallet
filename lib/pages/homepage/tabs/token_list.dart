@@ -2,7 +2,6 @@ import 'package:crypto_wallet/main.dart';
 import 'package:crypto_wallet/service/data_service.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 
@@ -18,9 +17,7 @@ class TokenList extends StatefulWidget {
 class _TokenListState extends State<TokenList>
     with AutomaticKeepAliveClientMixin {
   final _tokens = ValueNotifier<List<Token>>([]);
-  final isFavorite = ValueNotifier(false);
   final service = DataService();
-  var tokensBox;
 
   @override
   void initState() {
@@ -65,7 +62,7 @@ class _TokenListState extends State<TokenList>
         builder: (context, box, _) {
           final myTokensList = box.values.toList();
           final myFavTokens = box.values
-              .where((element) => element.isFavorite == false)
+              .where((element) => element.isFavorite == true)
               .toList();
 
           return CustomScrollView(
@@ -85,15 +82,20 @@ class _TokenListState extends State<TokenList>
                         child: myFavTokens.isNotEmpty
                             ? ListView.builder(
                                 scrollDirection: Axis.horizontal,
+                                itemCount: myFavTokens.length,
                                 itemBuilder: ((context, index) {
                                   final favToken = myFavTokens[index];
                                   return Padding(
                                     padding: const EdgeInsets.only(right: 5),
                                     child: Chip(
                                       backgroundColor: const Color(0xFFE4E4E4),
-                                      avatar: const CircleAvatar(
+                                      avatar: CircleAvatar(
                                         backgroundColor: Colors.transparent,
-                                        child: Icon(FontAwesomeIcons.bitcoin),
+                                        child: ClipRRect(
+                                          borderRadius:
+                                              BorderRadius.circular(50.0),
+                                          child: Image.network(favToken.image),
+                                        ),
                                       ),
                                       label: Text(
                                         favToken.currentPrice.toString(),
@@ -125,7 +127,10 @@ class _TokenListState extends State<TokenList>
                         subtitle: Text(currentToken.currentPrice.toString()),
                         leading: CircleAvatar(
                           backgroundColor: Colors.transparent,
-                          child: Image.network(currentToken.image),
+                          child: ClipRRect(
+                            borderRadius: BorderRadius.circular(50.0),
+                            child: Image.network(currentToken.image),
+                          ),
                         ),
                         trailing: IconButton(
                           icon: currentToken.isFavorite == true
@@ -138,10 +143,14 @@ class _TokenListState extends State<TokenList>
                               ? Colors.orange
                               : Colors.white,
                           onPressed: () {
-                            var isFavNow =
-                                currentToken.isFavorite == true ? false : true;
-                            currentToken.copyWith(
-                              isFavorite: isFavNow,
+                            debugPrint('${currentToken.isFavorite}');
+                            box.putAt(
+                              index,
+                              currentToken.copyWith(
+                                isFavorite: currentToken.isFavorite == false
+                                    ? true
+                                    : false,
+                              ),
                             );
                           },
                         ),

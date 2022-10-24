@@ -31,6 +31,7 @@ enum Routes {
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
+  Hive.deleteFromDisk();
   setLocaleMessages('it', ShortLookupItMessages());
   await Hive.initFlutter();
   Hive.registerAdapter(FavoriteTokensAdapter());
