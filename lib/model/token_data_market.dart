@@ -54,7 +54,7 @@ class Token {
         name: json['name'],
         symbol: json['symbol'],
         image: json['image'],
-        currentPrice: json['current_price'].toDouble(),
+        currentPrice: (json['current_price'] as num).toDouble(),
         isFavorite: json['isFavorite'] ?? false,
       );
 }

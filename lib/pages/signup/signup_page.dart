@@ -1,5 +1,6 @@
 import 'package:crypto_wallet/pages/signup/layouts/centralized_signup.dart';
 import 'package:crypto_wallet/pages/signup/layouts/decentralized_signup.dart';
+import 'package:crypto_wallet/utils/extensions.dart';
 import 'package:flutter/material.dart';
 
 class SignupPage extends StatefulWidget {
@@ -16,7 +17,7 @@ class _SignupPageState extends State<SignupPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Signup'),
+        title: Text(context.localizations.signUp),
       ),
       body: SafeArea(
         minimum: const EdgeInsets.all(20),
@@ -31,7 +32,7 @@ class _SignupPageState extends State<SignupPage> {
                     icon: const Icon(Icons.info_outline),
                   ),
                   Text(
-                    'Create classic wallet',
+                    context.localizations.lblClassicWallet,
                     style: Theme.of(context).textTheme.bodyText1,
                   ),
                   ValueListenableBuilder<bool>(

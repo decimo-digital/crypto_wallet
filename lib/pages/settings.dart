@@ -1,4 +1,5 @@
 import 'package:crypto_wallet/main.dart';
+import 'package:crypto_wallet/utils/extensions.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
@@ -14,7 +15,7 @@ class _SettingsState extends State<Settings> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('Settings')),
+      appBar: AppBar(title: Text(context.localizations.lblSettings)),
       body: SafeArea(
         minimum: const EdgeInsets.symmetric(
           horizontal: 20,
@@ -51,11 +52,11 @@ class _SettingsState extends State<Settings> {
                 ),
               ],
             ),
-            const Padding(
-              padding: EdgeInsets.only(top: 30),
+            Padding(
+              padding: const EdgeInsets.only(top: 30),
               child: TextField(
                 decoration: InputDecoration(
-                  hintText: 'What\'s your name?',
+                  hintText: context.localizations.hintName,
                 ),
               ),
             ),
@@ -67,7 +68,7 @@ class _SettingsState extends State<Settings> {
                     FirebaseAuth.instance.signOut();
                     context.goNamed(Routes.login.name);
                   },
-                  child: const Text('Logout'),
+                  child: Text(context.localizations.btnLogout),
                 ),
               ),
             ),

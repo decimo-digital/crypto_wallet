@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:crypto_wallet/utils/extensions.dart';
 import 'package:crypto_wallet/utils/passphrase_generator.dart';
 import 'package:flutter/material.dart';
 
@@ -28,7 +29,7 @@ class _DecentralizedSignupState extends State<DecentralizedSignup> {
       child: Column(
         children: [
           Text(
-            'Save these words as it will be the only way you can redover your wallet.',
+            context.localizations.hintSavePassphrase,
             style: Theme.of(context).textTheme.bodyText1,
             textAlign: TextAlign.center,
           ),
@@ -62,7 +63,7 @@ class _DecentralizedSignupState extends State<DecentralizedSignup> {
               alignment: Alignment.bottomCenter,
               child: ElevatedButton(
                 onPressed: () {},
-                child: const Text('Continue'),
+                child: Text(context.localizations.btnContinue),
               ),
             ),
           ),

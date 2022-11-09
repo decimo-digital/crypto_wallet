@@ -1,3 +1,4 @@
+import 'package:crypto_wallet/utils/extensions.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
@@ -138,7 +139,7 @@ class _SwapTokensState extends State<SwapTokens> {
               padding: const EdgeInsets.only(bottom: 20),
               child: ElevatedButton(
                 onPressed: () {},
-                child: const Text('Swap'),
+                child: Text(context.localizations.swap),
               ),
             ),
           ),

@@ -1,5 +1,6 @@
 import 'dart:math';
 
+import 'package:crypto_wallet/utils/extensions.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:intl/intl.dart';
@@ -84,14 +85,13 @@ class _CoinDetailsState extends State<CoinDetails> {
                         );
                         if (date.difference(DateTime.now()).inHours.abs() >=
                             48) {
-                          return DateFormat('dd/MM').format(date);
+                          return DateFormat(context.localizations.dateFormat)
+                              .format(date);
                         }
-                        return timeago.format(date, locale: 'it');
+                        return timeago.format(date);
                       },
-                      labelY: (val) => NumberFormat.compactCurrency(
-                        locale: 'it',
-                        symbol: '€',
-                      ).format(val),
+                      labelY: (val) =>
+                          NumberFormat.compactCurrency(symbol: '€').format(val),
                     ),
                     ChartGridLayer(
                       settings: ChartGridSettings(
@@ -137,7 +137,6 @@ class _CoinDetailsState extends State<CoinDetails> {
                         circleBorderThickness: 2.0,
                         currentPos: (item) => item.currentValuePos,
                         onTextValue: (item) => NumberFormat.compactCurrency(
-                          locale: 'it',
                           symbol: '€',
                         ).format(item.value),
                         marginBottom: 6.0,
@@ -166,7 +165,7 @@ class _CoinDetailsState extends State<CoinDetails> {
                   children: [
                     ListTile(
                       title: Text(
-                        'In last 10 hours',
+                        'In last 10 hours', //TODO
                         style: Theme.of(context).textTheme.bodyText1!.copyWith(
                               color: Colors.white,
                             ),
@@ -184,7 +183,7 @@ class _CoinDetailsState extends State<CoinDetails> {
                     ),
                     ListTile(
                       title: Text(
-                        'Since last purchase',
+                        context.localizations.lblSinceLastPurchase,
                         style: Theme.of(context).textTheme.bodyText1!.copyWith(
                               color: Colors.white,
                             ),
@@ -200,7 +199,7 @@ class _CoinDetailsState extends State<CoinDetails> {
                       child: Align(
                         alignment: Alignment.bottomCenter,
                         child: ElevatedButton(
-                          child: const Text('Purchase'),
+                          child: Text(context.localizations.btnPurchase),
                           onPressed: () {},
                         ),
                       ),

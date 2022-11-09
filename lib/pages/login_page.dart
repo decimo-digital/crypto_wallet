@@ -1,6 +1,7 @@
 // ignore_for_file: use_build_context_synchronously
 
 import 'package:crypto_wallet/main.dart';
+import 'package:crypto_wallet/utils/extensions.dart';
 import 'package:email_validator/email_validator.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
@@ -34,7 +35,7 @@ class _LoginPageState extends State<LoginPage> {
         actions: [
           TextButton(
             onPressed: () => context.pushNamed(Routes.signup.name),
-            child: const Text('SIGNUP'),
+            child: Text(context.localizations.signUp.toUpperCase()),
           ),
         ],
       ),
@@ -45,7 +46,7 @@ class _LoginPageState extends State<LoginPage> {
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
             Text(
-              'Use email and password',
+              context.localizations.txtUseEmailPassword,
               style: Theme.of(context).textTheme.bodyText1,
             ),
             Form(
@@ -55,13 +56,13 @@ class _LoginPageState extends State<LoginPage> {
                   Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 25),
                     child: TextFormField(
-                      decoration: const InputDecoration(
-                        hintText: 'Email',
+                      decoration: InputDecoration(
+                        hintText: context.localizations.hintEmail,
                       ),
                       controller: emailController,
                       validator: (email) {
                         if (email!.isEmpty || !EmailValidator.validate(email)) {
-                          return 'Enter a valid mail';
+                          return context.localizations.errInvalidEmail;
                         }
                         return null;
                       },
@@ -73,13 +74,14 @@ class _LoginPageState extends State<LoginPage> {
                       horizontal: 25,
                     ),
                     child: TextFormField(
-                      decoration: const InputDecoration(
-                        hintText: 'Password',
+                      decoration: InputDecoration(
+                        hintText: context.localizations.hintPassword,
                       ),
                       obscureText: true,
                       controller: passwordController,
-                      validator: (psw) =>
-                          psw!.isEmpty ? 'Enter a password' : null,
+                      validator: (psw) => psw!.isEmpty
+                          ? context.localizations.errEmptyPassword
+                          : null,
                     ),
                   ),
                 ],
@@ -98,7 +100,7 @@ class _LoginPageState extends State<LoginPage> {
                   }
                 }
               },
-              child: const Text('Login'),
+              child: Text(context.localizations.signIn),
             ),
             Flexible(
               child: Row(
@@ -108,7 +110,7 @@ class _LoginPageState extends State<LoginPage> {
                   Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 15),
                     child: Text(
-                      'or',
+                      context.localizations.or,
                       style: Theme.of(context).textTheme.bodyText1,
                     ),
                   ),
@@ -141,9 +143,9 @@ class _LoginPageState extends State<LoginPage> {
                   mainAxisSize: MainAxisSize.min,
                   children: [
                     Image.asset('assets/google_logo.png'),
-                    const Padding(
-                      padding: EdgeInsets.only(left: 15),
-                      child: Text('Login with Google'),
+                    Padding(
+                      padding: const EdgeInsets.only(left: 15),
+                      child: Text(context.localizations.btnGoogleSignIn),
                     ),
                   ],
                 ),
@@ -156,7 +158,7 @@ class _LoginPageState extends State<LoginPage> {
                   onPressed: () async {
                     context.pushNamed(Routes.decentralizedLogin.name);
                   },
-                  child: const Text('Continue with passphrase'),
+                  child: Text(context.localizations.btnPassphraseLogin),
                 ),
               ),
             ),

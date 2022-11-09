@@ -1,7 +1,8 @@
 import 'package:crypto_wallet/main.dart';
 import 'package:crypto_wallet/service/data_service.dart';
-import 'package:flutter/material.dart';
+import 'package:crypto_wallet/utils/extensions.dart';
 import 'package:email_validator/email_validator.dart';
+import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
 class CentralizedSignup extends StatefulWidget {
@@ -32,7 +33,7 @@ class _CentralizedSignupState extends State<CentralizedSignup> {
         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
         children: [
           Text(
-            'Email and password registration',
+            context.localizations.txtEmailPasswordSignup,
             style: Theme.of(context).textTheme.bodyText1,
           ),
           Form(
@@ -42,13 +43,13 @@ class _CentralizedSignupState extends State<CentralizedSignup> {
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 25),
                   child: TextFormField(
-                    decoration: const InputDecoration(
-                      hintText: 'Email',
+                    decoration: InputDecoration(
+                      hintText: context.localizations.hintEmail,
                     ),
                     controller: _emailController,
                     validator: (email) =>
                         email != null && !EmailValidator.validate(email)
-                            ? 'Enter a valid mail'
+                            ? context.localizations.errInvalidEmail
                             : null,
                   ),
                 ),
@@ -56,7 +57,9 @@ class _CentralizedSignupState extends State<CentralizedSignup> {
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 25),
                   child: TextFormField(
-                    decoration: const InputDecoration(hintText: 'Password'),
+                    decoration: InputDecoration(
+                      hintText: context.localizations.hintPassword,
+                    ),
                     controller: _passwordController,
                   ),
                 ),
@@ -68,7 +71,7 @@ class _CentralizedSignupState extends State<CentralizedSignup> {
               service.signUp(_emailController, _passwordController, context);
               context.go(context.namedLocation(Routes.homepage.name));
             },
-            child: const Text('Register'),
+            child: Text(context.localizations.signUp),
           ),
           Flexible(
             child: Row(
@@ -80,7 +83,7 @@ class _CentralizedSignupState extends State<CentralizedSignup> {
                     horizontal: 15,
                   ),
                   child: Text(
-                    'or',
+                    context.localizations.or,
                     style: Theme.of(context).textTheme.bodyText1,
                   ),
                 ),
@@ -113,9 +116,9 @@ class _CentralizedSignupState extends State<CentralizedSignup> {
                 mainAxisSize: MainAxisSize.min,
                 children: [
                   Image.asset('assets/google_logo.png'),
-                  const Padding(
-                    padding: EdgeInsets.only(left: 15),
-                    child: Text('Register with Google'),
+                  Padding(
+                    padding: const EdgeInsets.only(left: 15),
+                    child: Text(context.localizations.btnGoogleSignUp),
                   ),
                 ],
               ),

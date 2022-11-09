@@ -1,5 +1,6 @@
 import 'package:crypto_wallet/main.dart';
 import 'package:crypto_wallet/service/data_service.dart';
+import 'package:crypto_wallet/utils/extensions.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:go_router/go_router.dart';
@@ -49,6 +50,7 @@ class _TokenListState extends State<TokenList>
 
   @override
   Widget build(BuildContext context) {
+    super.build(context);
     debugPrint(Hive.box<Token>('tokensBox').values.toString());
     debugPrint(_tokens.value.length.toString());
     _tokens.value.map((element) => Hive.box<Token>('tokensBox').add(element));
@@ -75,7 +77,7 @@ class _TokenListState extends State<TokenList>
                     mainAxisSize: MainAxisSize.min,
                     children: [
                       Text(
-                        'Favorites',
+                        context.localizations.lblFavourites,
                         style: Theme.of(context).textTheme.bodyText1,
                       ),
                       Flexible(
@@ -111,7 +113,11 @@ class _TokenListState extends State<TokenList>
                                   );
                                 }),
                               )
-                            : const SizedBox(child: Text('Non hai preferiti')),
+                            : SizedBox(
+                                child: Text(
+                                  context.localizations.txtNoFavouritesYet,
+                                ),
+                              ),
                       ),
                     ],
                   ),

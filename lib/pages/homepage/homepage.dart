@@ -2,6 +2,7 @@ import 'package:crypto_wallet/main.dart';
 import 'package:crypto_wallet/pages/homepage/tabs/swap_tokens.dart';
 import 'package:crypto_wallet/pages/homepage/tabs/token_list.dart';
 import 'package:crypto_wallet/service/data_service.dart';
+import 'package:crypto_wallet/utils/extensions.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
@@ -17,7 +18,6 @@ class Homepage extends StatefulWidget {
 class _HomepageState extends State<Homepage> with TickerProviderStateMixin {
   late final _tabController = TabController(length: 2, vsync: this);
   DataService service = DataService();
-  var tokensBox;
 
   @override
   void initState() {
@@ -45,9 +45,15 @@ class _HomepageState extends State<Homepage> with TickerProviderStateMixin {
         enableFeedback: true,
         automaticIndicatorColorAdjustment: true,
         controller: _tabController,
-        tabs: const [
-          Tab(icon: Icon(FontAwesomeIcons.coins), text: 'Homepage'),
-          Tab(icon: Icon(FontAwesomeIcons.arrowRightArrowLeft), text: 'Swap'),
+        tabs: [
+          Tab(
+            icon: const Icon(FontAwesomeIcons.coins),
+            text: context.localizations.tabHome,
+          ),
+          Tab(
+            icon: const Icon(FontAwesomeIcons.arrowRightArrowLeft),
+            text: context.localizations.swap,
+          ),
         ],
       ),
       body: SafeArea(

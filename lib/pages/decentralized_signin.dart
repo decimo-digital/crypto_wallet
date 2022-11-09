@@ -1,3 +1,4 @@
+import 'package:crypto_wallet/utils/extensions.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
@@ -24,7 +25,7 @@ class _DecentralizedSigninState extends State<DecentralizedSignin> {
             Padding(
               padding: const EdgeInsets.only(bottom: 20),
               child: Text(
-                'Write here the words you saved while creating your wallet.',
+                context.localizations.hintPassphraseLogin,
                 style: Theme.of(context).textTheme.bodyText1,
                 textAlign: TextAlign.center,
               ),
@@ -81,7 +82,7 @@ class _DecentralizedSigninState extends State<DecentralizedSignin> {
                 alignment: Alignment.bottomCenter,
                 child: ElevatedButton(
                   onPressed: () {},
-                  child: const Text('Continue'),
+                  child: Text(context.localizations.btnContinue),
                 ),
               ),
             )
