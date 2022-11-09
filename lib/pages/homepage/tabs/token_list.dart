@@ -160,6 +160,9 @@ class _TokenListState extends State<TokenList>
                               Routes.coinDetails.name,
                               params: {
                                 'coin': currentToken.id.toString(),
+                                'currentPrice':
+                                    currentToken.currentPrice.toString(),
+                                'price24h': currentToken.price24h.toString(),
                               },
                             ),
                           );

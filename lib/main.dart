@@ -82,9 +82,11 @@ class MyApp extends StatelessWidget {
           ),
           GoRoute(
             name: Routes.coinDetails.name,
-            path: ':coin',
+            path: ':coin/:currentPrice/:price24h',
             builder: (context, state) => CoinDetails(
               coinId: state.params['coin']!,
+              currentPrice: state.params['currentPrice']!,
+              price24h: state.params['price24h']!,
             ),
           )
         ],
