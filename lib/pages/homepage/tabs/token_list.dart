@@ -64,7 +64,6 @@ class _TokenListState extends State<TokenList>
           final myFavTokens = box.values
               .where((element) => element.isFavorite == true)
               .toList();
-
           return CustomScrollView(
             slivers: [
               SliverToBoxAdapter(
@@ -105,7 +104,14 @@ class _TokenListState extends State<TokenList>
                                           color: Colors.green,
                                         ),
                                       ),
-                                      onDeleted: () {},
+                                      onDeleted: () {
+                                        box.put(
+                                          favToken.id,
+                                          favToken.copyWith(
+                                            isFavorite: false,
+                                          ),
+                                        );
+                                      },
                                       deleteIconColor: Colors.black,
                                     ),
                                   );
