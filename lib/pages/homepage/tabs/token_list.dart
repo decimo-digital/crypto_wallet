@@ -66,7 +66,6 @@ class _TokenListState extends State<TokenList>
           final myFavTokens = box.values
               .where((element) => element.isFavorite == true)
               .toList();
-
           return CustomScrollView(
             slivers: [
               SliverToBoxAdapter(
@@ -107,7 +106,14 @@ class _TokenListState extends State<TokenList>
                                           color: Colors.green,
                                         ),
                                       ),
-                                      onDeleted: () {},
+                                      onDeleted: () {
+                                        box.put(
+                                          favToken.id,
+                                          favToken.copyWith(
+                                            isFavorite: false,
+                                          ),
+                                        );
+                                      },
                                       deleteIconColor: Colors.black,
                                     ),
                                   );
@@ -166,6 +172,9 @@ class _TokenListState extends State<TokenList>
                               Routes.coinDetails.name,
                               params: {
                                 'coin': currentToken.id.toString(),
+                                'currentPrice':
+                                    currentToken.currentPrice.toString(),
+                                'price24h': currentToken.price24h.toString(),
                               },
                             ),
                           );

@@ -10,10 +10,14 @@ import 'package:timeago/timeago.dart' as timeago;
 class CoinDetails extends StatefulWidget {
   const CoinDetails({
     required this.coinId,
+    required this.currentPrice,
+    required this.price24h,
     super.key,
   });
 
   final String coinId;
+  final String currentPrice;
+  final String price24h;
 
   @override
   State<CoinDetails> createState() => _CoinDetailsState();
@@ -171,7 +175,7 @@ class _CoinDetailsState extends State<CoinDetails> {
                             ),
                       ),
                       subtitle: Text(
-                        '€ 2500 (+ 50%)',
+                        widget.currentPrice,
                         style: Theme.of(context).textTheme.bodyText1!.copyWith(
                               color: Colors.green,
                             ),
@@ -189,7 +193,7 @@ class _CoinDetailsState extends State<CoinDetails> {
                             ),
                       ),
                       subtitle: Text(
-                        '+ 350 (+ 5%)',
+                        widget.price24h,
                         style: Theme.of(context).textTheme.bodyText1!.copyWith(
                               color: Colors.green,
                             ),

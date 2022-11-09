@@ -23,13 +23,14 @@ class TokenAdapter extends TypeAdapter<Token> {
       image: fields[3] as String,
       currentPrice: fields[4] as double,
       isFavorite: fields[5] as bool?,
+      price24h: fields[6] as double?,
     );
   }
 
   @override
   void write(BinaryWriter writer, Token obj) {
     writer
-      ..writeByte(6)
+      ..writeByte(7)
       ..writeByte(0)
       ..write(obj.id)
       ..writeByte(1)
@@ -41,7 +42,9 @@ class TokenAdapter extends TypeAdapter<Token> {
       ..writeByte(4)
       ..write(obj.currentPrice)
       ..writeByte(5)
-      ..write(obj.isFavorite);
+      ..write(obj.isFavorite)
+      ..writeByte(6)
+      ..write(obj.price24h);
   }
 
   @override

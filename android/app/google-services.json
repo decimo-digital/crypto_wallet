@@ -1,33 +1,33 @@
 {
   "project_info": {
-    "project_number": "501626315757",
-    "project_id": "cryptowallet-979a7",
-    "storage_bucket": "cryptowallet-979a7.appspot.com"
+    "project_number": "781840244242",
+    "project_id": "cryptowallet-decimo",
+    "storage_bucket": "cryptowallet-decimo.appspot.com"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:501626315757:android:f5a0769fdb5c1d6438bde4",
+        "mobilesdk_app_id": "1:781840244242:android:33abe7c3a90bfd4cd802cb",
         "android_client_info": {
           "package_name": "com.example.crypto_wallet"
         }
       },
       "oauth_client": [
         {
-          "client_id": "501626315757-8hafnlg5o8me1sad2ls3ql6b0norfpnd.apps.googleusercontent.com",
+          "client_id": "781840244242-cfvi0kflamsj1vtr8vih9ujtte1pbpku.apps.googleusercontent.com",
           "client_type": 3
         }
       ],
       "api_key": [
         {
-          "current_key": "AIzaSyBRVON2Y50Lolt6xW-L2QV6_IO3CCI-34Q"
+          "current_key": "AIzaSyAxGfnYFHvQXuFjsSIv4l2aX8HoD2Damx4"
         }
       ],
       "services": {
         "appinvite_service": {
           "other_platform_oauth_client": [
             {
-              "client_id": "501626315757-8hafnlg5o8me1sad2ls3ql6b0norfpnd.apps.googleusercontent.com",
+              "client_id": "781840244242-cfvi0kflamsj1vtr8vih9ujtte1pbpku.apps.googleusercontent.com",
               "client_type": 3
             }
           ]

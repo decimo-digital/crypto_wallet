@@ -11,6 +11,7 @@ class Token {
     required this.image,
     required this.currentPrice,
     required this.isFavorite,
+    required this.price24h,
   });
 
   @HiveField(0)
@@ -31,6 +32,9 @@ class Token {
   @HiveField(5)
   bool? isFavorite;
 
+  @HiveField(6)
+  double? price24h;
+
   Token copyWith({
     String? id,
     String? name,
@@ -38,6 +42,7 @@ class Token {
     String? image,
     double? currentPrice,
     bool? isFavorite,
+    double? price24h,
   }) {
     return Token(
       id: id ?? this.id,
@@ -46,6 +51,7 @@ class Token {
       image: image ?? this.image,
       currentPrice: currentPrice ?? this.currentPrice,
       isFavorite: isFavorite ?? this.isFavorite,
+      price24h: price24h ?? this.price24h,
     );
   }
 
@@ -56,5 +62,6 @@ class Token {
         image: json['image'],
         currentPrice: (json['current_price'] as num).toDouble(),
         isFavorite: json['isFavorite'] ?? false,
+        price24h: json['price_change_24h'].toDouble(),
       );
 }

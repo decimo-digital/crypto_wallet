@@ -1,3 +1,4 @@
+import 'package:crypto_wallet/l10n/generated/app_localizations.dart';
 import 'package:crypto_wallet/model/favorite_tokens.dart';
 import 'package:crypto_wallet/pages/coin_details.dart';
 import 'package:crypto_wallet/pages/decentralized_signin.dart';
@@ -6,12 +7,12 @@ import 'package:crypto_wallet/pages/login_page.dart';
 import 'package:crypto_wallet/pages/settings.dart';
 import 'package:crypto_wallet/pages/signup/signup_page.dart';
 import 'package:crypto_wallet/utils/short_it_lookup_messages.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:timeago/timeago.dart';
-import 'package:firebase_core/firebase_core.dart';
 
 import 'model/token_data_market.dart';
 
@@ -82,9 +83,11 @@ class MyApp extends StatelessWidget {
           ),
           GoRoute(
             name: Routes.coinDetails.name,
-            path: ':coin',
+            path: ':coin/:currentPrice/:price24h',
             builder: (context, state) => CoinDetails(
               coinId: state.params['coin']!,
+              currentPrice: state.params['currentPrice']!,
+              price24h: state.params['price24h']!,
             ),
           )
         ],
@@ -99,6 +102,8 @@ class MyApp extends StatelessWidget {
       routerDelegate: _router.routerDelegate,
       routeInformationParser: _router.routeInformationParser,
       routeInformationProvider: _router.routeInformationProvider,
+      supportedLocales: AppLocalizations.supportedLocales,
+      localizationsDelegates: AppLocalizations.localizationsDelegates,
       title: 'Cryptowallet',
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
