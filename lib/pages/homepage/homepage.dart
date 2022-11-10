@@ -1,4 +1,5 @@
 import 'package:crypto_wallet/main.dart';
+import 'package:crypto_wallet/pages/homepage/tabs/purchases_list.dart';
 import 'package:crypto_wallet/pages/homepage/tabs/swap_tokens.dart';
 import 'package:crypto_wallet/pages/homepage/tabs/token_list.dart';
 import 'package:crypto_wallet/service/data_service.dart';
@@ -16,13 +17,8 @@ class Homepage extends StatefulWidget {
 }
 
 class _HomepageState extends State<Homepage> with TickerProviderStateMixin {
-  late final _tabController = TabController(length: 2, vsync: this);
-  DataService service = DataService();
-
-  @override
-  void initState() {
-    super.initState();
-  }
+  late final _tabController = TabController(length: 3, vsync: this);
+  final service = DataService();
 
   @override
   Widget build(BuildContext context) {
@@ -54,6 +50,10 @@ class _HomepageState extends State<Homepage> with TickerProviderStateMixin {
             icon: const Icon(FontAwesomeIcons.arrowRightArrowLeft),
             text: context.localizations.swap,
           ),
+          Tab(
+            icon: const Icon(FontAwesomeIcons.list),
+            text: context.localizations.purchasesList,
+          ),
         ],
       ),
       body: SafeArea(
@@ -63,6 +63,7 @@ class _HomepageState extends State<Homepage> with TickerProviderStateMixin {
           children: const [
             TokenList(),
             SwapTokens(),
+            PurchasesList(),
           ],
         ),
       ),

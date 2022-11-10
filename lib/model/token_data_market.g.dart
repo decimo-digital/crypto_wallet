@@ -3,57 +3,25 @@
 part of 'token_data_market.dart';
 
 // **************************************************************************
-// TypeAdapterGenerator
+// JsonSerializableGenerator
 // **************************************************************************
 
-class TokenAdapter extends TypeAdapter<Token> {
-  @override
-  final int typeId = 1;
-
-  @override
-  Token read(BinaryReader reader) {
-    final numOfFields = reader.readByte();
-    final fields = <int, dynamic>{
-      for (int i = 0; i < numOfFields; i++) reader.readByte(): reader.read(),
-    };
-    return Token(
-      id: fields[0] as String,
-      name: fields[1] as String,
-      symbol: fields[2] as String,
-      image: fields[3] as String,
-      currentPrice: fields[4] as double,
-      isFavorite: fields[5] as bool?,
-      price24h: fields[6] as double?,
+_$_Token _$$_TokenFromJson(Map<String, dynamic> json) => _$_Token(
+      id: json['id'] as String,
+      name: json['name'] as String,
+      symbol: json['symbol'] as String,
+      image: json['image'] as String,
+      currentPrice: json['current_price'] as num,
+      isFavorite: json['isFavorite'] as bool?,
+      price24h: json['price_change_24h'] as num?,
     );
-  }
 
-  @override
-  void write(BinaryWriter writer, Token obj) {
-    writer
-      ..writeByte(7)
-      ..writeByte(0)
-      ..write(obj.id)
-      ..writeByte(1)
-      ..write(obj.name)
-      ..writeByte(2)
-      ..write(obj.symbol)
-      ..writeByte(3)
-      ..write(obj.image)
-      ..writeByte(4)
-      ..write(obj.currentPrice)
-      ..writeByte(5)
-      ..write(obj.isFavorite)
-      ..writeByte(6)
-      ..write(obj.price24h);
-  }
-
-  @override
-  int get hashCode => typeId.hashCode;
-
-  @override
-  bool operator ==(Object other) =>
-      identical(this, other) ||
-      other is TokenAdapter &&
-          runtimeType == other.runtimeType &&
-          typeId == other.typeId;
-}
+Map<String, dynamic> _$$_TokenToJson(_$_Token instance) => <String, dynamic>{
+      'id': instance.id,
+      'name': instance.name,
+      'symbol': instance.symbol,
+      'image': instance.image,
+      'current_price': instance.currentPrice,
+      'isFavorite': instance.isFavorite,
+      'price_change_24h': instance.price24h,
+    };

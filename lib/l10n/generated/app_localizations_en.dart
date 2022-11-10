@@ -80,5 +80,11 @@ class AppLocalizationsEn extends AppLocalizations {
   String get tabHome => 'Homepage';
 
   @override
-  String get swap => 'Swao';
+  String get swap => 'Swap';
+
+  @override
+  String get purchasesList => 'Purchases';
+
+  @override
+  String get txtNoPurchasesYet => 'No purchases yet';
 }

@@ -1,9 +1,11 @@
 import 'dart:convert';
+
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import '../model/token_data_market.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:http/http.dart' as http;
+
+import '../model/token_data_market.dart';
 
 class DataService {
   Future<List<Token>> fetchToken() async {

@@ -6,15 +6,16 @@ import 'package:crypto_wallet/pages/homepage/homepage.dart';
 import 'package:crypto_wallet/pages/login_page.dart';
 import 'package:crypto_wallet/pages/settings.dart';
 import 'package:crypto_wallet/pages/signup/signup_page.dart';
+import 'package:crypto_wallet/service/api_connection.dart';
+import 'package:crypto_wallet/service/cache_service.dart';
 import 'package:crypto_wallet/utils/short_it_lookup_messages.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'package:get_it/get_it.dart';
 import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:timeago/timeago.dart';
-
-import 'model/token_data_market.dart';
 
 enum Routes {
   login._('login'),
@@ -36,10 +37,20 @@ Future<void> main() async {
   setLocaleMessages('it', ShortLookupItMessages());
   await Hive.initFlutter();
   Hive.registerAdapter(FavoriteTokensAdapter());
-  Hive.registerAdapter(TokenAdapter());
 
-  await Hive.openBox<Token>('tokensBox');
-  await Hive.openBox<FavoriteTokens>('favTokens');
+  GetIt.instance
+    ..registerSingletonAsync<CacheService>(() async {
+      final service = CacheService();
+      await service.init();
+      return service;
+    })
+    ..registerSingletonAsync<ApiConnection>(
+      () async => ApiConnection(),
+      dependsOn: [CacheService],
+    );
+
+  //await Hive.openBox<Token>('tokensBox');
+  //await Hive.openBox<FavoriteTokens>('favTokens');
 
   runApp(MyApp());
 }
@@ -52,7 +63,7 @@ class MyApp extends StatelessWidget {
     routes: [
       GoRoute(
         path: '/',
-        redirect: (state) => '/login',
+        redirect: (state, _) => '/login',
       ),
       GoRoute(
         name: Routes.login.name,

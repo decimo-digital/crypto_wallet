@@ -25,5 +25,7 @@
     "lblClassicWallet": "Crea un wallet classico",
     "txtEmailPasswordSignup": "Registrazione con email e password",
     "tabHome": "Homepage",
-    "swap": "Scambia"
+    "swap": "Scambia",
+    "purchasesList": "Acquisti",
+    "txtNoPurchasesYet": "Ancora nessun acquisto"
 }

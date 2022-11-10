@@ -81,4 +81,10 @@ class AppLocalizationsIt extends AppLocalizations {
 
   @override
   String get swap => 'Scambia';
+
+  @override
+  String get purchasesList => 'Acquisti';
+
+  @override
+  String get txtNoPurchasesYet => 'Ancora nessun acquisto';
 }

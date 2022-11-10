@@ -248,6 +248,18 @@ abstract class AppLocalizations {
   /// In it, this message translates to:
   /// **'Scambia'**
   String get swap;
+
+  /// No description provided for @purchasesList.
+  ///
+  /// In it, this message translates to:
+  /// **'Acquisti'**
+  String get purchasesList;
+
+  /// No description provided for @txtNoPurchasesYet.
+  ///
+  /// In it, this message translates to:
+  /// **'Ancora nessun acquisto'**
+  String get txtNoPurchasesYet;
 }
 
 class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {
