@@ -118,18 +118,25 @@ class _TokenListState extends State<TokenList>
                     final currentToken = myTokensList[index];
                     return TokenCard(
                       token: currentToken,
-                      onTap: () {
-                        context.push(
-                          context.namedLocation(
-                            Routes.coinDetails.name,
-                            params: {
-                              'coin': currentToken.id.toString(),
-                              'currentPrice':
-                                  currentToken.currentPrice.toString(),
-                              'price24h': currentToken.price24h.toString(),
-                            },
-                          ),
-                        );
+                      onTap: () async {
+                        await GetIt.instance.get<ApiConnection>().getHistory(
+                              tokenId: currentToken.id,
+                              from: DateTime.now()
+                                  .subtract(const Duration(hours: 6)),
+                            );
+                        if (mounted) {
+                          context.push(
+                            context.namedLocation(
+                              Routes.coinDetails.name,
+                              params: {
+                                'coin': currentToken.id.toString(),
+                                'currentPrice':
+                                    currentToken.currentPrice.toString(),
+                                'price24h': currentToken.price24h.toString(),
+                              },
+                            ),
+                          );
+                        }
                       },
                       trailing: IconButton(
                         icon: currentToken.isFavorite == true

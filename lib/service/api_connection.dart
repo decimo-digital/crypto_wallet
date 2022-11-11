@@ -70,4 +70,20 @@ class ApiConnection {
           .updateFavoriteToken(tokenId, newFavoriteValue: false);
     }
   }
+
+  Future<void> getHistory({
+    required String tokenId,
+    required DateTime from,
+    DateTime? to,
+  }) async {
+    final realTo = to ?? DateTime.now();
+    final uri = Uri.parse(
+      '$_baseUrl/getCoinHistory?tokenId=$tokenId&from=${from.millisecondsSinceEpoch ~/ 1000}&to=${realTo.millisecondsSinceEpoch ~/ 1000}',
+    );
+
+    final response = await _client.get(uri);
+
+    debugPrint('Status: ${response.statusCode}');
+    debugPrint('Received response: ${jsonDecode(response.body)}');
+  }
 }
