@@ -1,7 +1,6 @@
 import 'package:crypto_wallet/main.dart';
 import 'package:crypto_wallet/service/api_connection.dart';
 import 'package:crypto_wallet/service/cache_service.dart';
-import 'package:crypto_wallet/service/data_service.dart';
 import 'package:crypto_wallet/utils/extensions.dart';
 import 'package:crypto_wallet/widgets/token_card.dart';
 import 'package:flutter/material.dart';
@@ -21,14 +20,14 @@ class TokenList extends StatefulWidget {
 class _TokenListState extends State<TokenList>
     with AutomaticKeepAliveClientMixin {
   final _tokens = ValueNotifier<List<Token>>([]);
-  final service = DataService();
   final _cacheService = GetIt.instance.get<CacheService>();
   final _connection = GetIt.instance.get<ApiConnection>();
+  var _isLoading = true;
 
   @override
   void initState() {
     super.initState();
-    _connection.getTokens();
+    _connection.getTokens().then((_) => _isLoading = false);
   }
 
   @override
@@ -110,6 +109,9 @@ class _TokenListState extends State<TokenList>
               stream: _cacheService.getTokensStream(),
               builder: (context, snap) {
                 final myTokensList = snap.data ?? <Token>[];
+                if (_isLoading) {
+                  return const Center(child: CircularProgressIndicator());
+                }
 
                 return ListView.builder(
                   itemBuilder: (context, index) {
@@ -139,15 +141,19 @@ class _TokenListState extends State<TokenList>
                         color: currentToken.isFavorite == true
                             ? Colors.orange
                             : Colors.white,
-                        onPressed: () {
+                        onPressed: () async {
                           debugPrint('${currentToken.isFavorite}');
+                          final isFav = currentToken.isFavorite == null
+                              ? true
+                              : !currentToken.isFavorite!;
 
-                          _cacheService.updateFavoriteToken(
-                            currentToken.id,
-                            newFavoriteValue: currentToken.isFavorite == null
-                                ? true
-                                : !currentToken.isFavorite!,
-                          );
+                          final conn = GetIt.instance.get<ApiConnection>();
+
+                          if (isFav) {
+                            await conn.setFavorite(currentToken.id);
+                          } else {
+                            await conn.removeFavorite(currentToken.id);
+                          }
                         },
                       ),
                     );

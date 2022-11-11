@@ -3,11 +3,10 @@
 import 'package:crypto_wallet/main.dart';
 import 'package:crypto_wallet/utils/extensions.dart';
 import 'package:email_validator/email_validator.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
 import 'package:go_router/go_router.dart';
-
-import '../service/data_service.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
@@ -17,7 +16,6 @@ class LoginPage extends StatefulWidget {
 }
 
 class _LoginPageState extends State<LoginPage> {
-  final service = DataService();
   final emailController = TextEditingController();
   final passwordController = TextEditingController();
   final _formKey = GlobalKey<FormState>();
@@ -107,15 +105,17 @@ class _LoginPageState extends State<LoginPage> {
                     ElevatedButton(
                       onPressed: () async {
                         if (_formKey.currentState!.validate()) {
-                          final user = await service.signIn(
-                            emailController,
-                            passwordController,
-                            context,
-                          );
-                          if (user != null) {
-                            context.go(
-                              context.namedLocation(Routes.homepage.name),
+                          try {
+                            await FirebaseAuth.instance
+                                .signInWithEmailAndPassword(
+                              email: emailController.text.trim(),
+                              password: passwordController.text.trim(),
                             );
+                          } on FirebaseException catch (error) {
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              SnackBar(content: Text('${error.message}')),
+                            );
+                            debugPrint('$error');
                           }
                         }
                       },
@@ -156,7 +156,11 @@ class _LoginPageState extends State<LoginPage> {
                         ),
                       ),
                       child: ElevatedButton(
-                        onPressed: () {},
+                        onPressed: () async {
+                          final credential = await FirebaseAuth.instance
+                              .signInWithProvider(GoogleAuthProvider());
+                          debugPrint('logged in with ${credential.user?.uid}');
+                        },
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.center,
                           mainAxisSize: MainAxisSize.min,

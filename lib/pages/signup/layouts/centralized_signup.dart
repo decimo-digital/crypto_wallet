@@ -1,7 +1,7 @@
 import 'package:crypto_wallet/main.dart';
-import 'package:crypto_wallet/service/data_service.dart';
 import 'package:crypto_wallet/utils/extensions.dart';
 import 'package:email_validator/email_validator.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
@@ -15,7 +15,6 @@ class CentralizedSignup extends StatefulWidget {
 class _CentralizedSignupState extends State<CentralizedSignup> {
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
-  DataService service = DataService();
   final _formKey = GlobalKey<FormState>();
 
   @override
@@ -68,8 +67,19 @@ class _CentralizedSignupState extends State<CentralizedSignup> {
           ),
           ElevatedButton(
             onPressed: () async {
-              service.signUp(_emailController, _passwordController, context);
-              context.go(context.namedLocation(Routes.homepage.name));
+              try {
+                await FirebaseAuth.instance.createUserWithEmailAndPassword(
+                  email: _emailController.text.trim(),
+                  password: _passwordController.text.trim(),
+                );
+                if (mounted) {
+                  context.go(context.namedLocation(Routes.homepage.name));
+                }
+              } on FirebaseException catch (error) {
+                ScaffoldMessenger.of(context)
+                    .showSnackBar(SnackBar(content: Text('${error.message}')));
+                debugPrint('$error');
+              }
             },
             child: Text(context.localizations.signUp),
           ),

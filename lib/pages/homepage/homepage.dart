@@ -2,7 +2,6 @@ import 'package:crypto_wallet/main.dart';
 import 'package:crypto_wallet/pages/homepage/tabs/purchases_list.dart';
 import 'package:crypto_wallet/pages/homepage/tabs/swap_tokens.dart';
 import 'package:crypto_wallet/pages/homepage/tabs/token_list.dart';
-import 'package:crypto_wallet/service/data_service.dart';
 import 'package:crypto_wallet/utils/extensions.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -18,7 +17,6 @@ class Homepage extends StatefulWidget {
 
 class _HomepageState extends State<Homepage> with TickerProviderStateMixin {
   late final _tabController = TabController(length: 3, vsync: this);
-  final service = DataService();
 
   @override
   Widget build(BuildContext context) {
