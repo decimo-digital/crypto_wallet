@@ -29,6 +29,13 @@
             {
               "client_id": "781840244242-cfvi0kflamsj1vtr8vih9ujtte1pbpku.apps.googleusercontent.com",
               "client_type": 3
+            },
+            {
+              "client_id": "781840244242-ob5ejbuvb7eenr6tkuj1ole5nnrk8ss9.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.example.cryptoWallet"
+              }
             }
           ]
         }
