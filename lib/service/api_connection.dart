@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:crypto_wallet/model/token_data_market.dart';
+import 'package:crypto_wallet/model/token_history.dart';
 import 'package:crypto_wallet/service/cache_service.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -8,7 +9,7 @@ import 'package:get_it/get_it.dart';
 import 'package:http/http.dart';
 
 class ApiConnection {
-  final _host = 'https://b00c-47-53-15-21.eu.ngrok.io';
+  final _host = 'https://c230-47-53-15-21.eu.ngrok.io';
   late final _baseUrl = '$_host/cryptowallet-decimo/us-central1';
 
   final _client = Client();
@@ -18,9 +19,15 @@ class ApiConnection {
   Future<void> getTokens() async {
     final user = FirebaseAuth.instance.currentUser;
     assert(user != null);
-    final response = await _client.get(
-      Uri.parse('$_baseUrl/getCoins?userId=${user!.uid}'),
-    );
+
+    debugPrint('Requesting coins');
+
+    final response = await _client
+        .get(Uri.parse('$_baseUrl/getCoins?userId=${user!.uid}'))
+        .onError((error, stackTrace) {
+      debugPrint('Failed to get coins: $error');
+      return Response(jsonEncode({}), 500);
+    });
 
     final tokens = response.statusCode != 200
         ? <Token>[]
@@ -71,7 +78,7 @@ class ApiConnection {
     }
   }
 
-  Future<void> getHistory({
+  Future<TokenHistory?> getHistory({
     required String tokenId,
     required DateTime from,
     DateTime? to,
@@ -82,8 +89,10 @@ class ApiConnection {
     );
 
     final response = await _client.get(uri);
+    if (response.statusCode != 200) {
+      return null;
+    }
 
-    debugPrint('Status: ${response.statusCode}');
-    debugPrint('Received response: ${jsonDecode(response.body)}');
+    return TokenHistory.fromJson(jsonDecode(response.body));
   }
 }

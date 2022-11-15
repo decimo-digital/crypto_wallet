@@ -106,11 +106,20 @@ class _LoginPageState extends State<LoginPage> {
                       onPressed: () async {
                         if (_formKey.currentState!.validate()) {
                           try {
-                            await FirebaseAuth.instance
+                            debugPrint('Logging in with firebase auth');
+                            final credentials = await FirebaseAuth.instance
                                 .signInWithEmailAndPassword(
                               email: emailController.text.trim(),
                               password: passwordController.text.trim(),
+                            )
+                                .onError((error, stackTrace) {
+                              debugPrint('Failed login: $error');
+                              throw Exception(error);
+                            });
+                            debugPrint(
+                              'Logged in as ${credentials.user?.email}',
                             );
+                            context.goNamed(Routes.homepage.name);
                           } on FirebaseException catch (error) {
                             ScaffoldMessenger.of(context).showSnackBar(
                               SnackBar(content: Text('${error.message}')),
@@ -157,9 +166,16 @@ class _LoginPageState extends State<LoginPage> {
                       ),
                       child: ElevatedButton(
                         onPressed: () async {
-                          final credential = await FirebaseAuth.instance
-                              .signInWithProvider(GoogleAuthProvider());
-                          debugPrint('logged in with ${credential.user?.uid}');
+                          try {
+                            final credential = await FirebaseAuth.instance
+                                .signInWithProvider(GoogleAuthProvider());
+                            debugPrint(
+                              'logged in with ${credential.user?.uid}',
+                            );
+                          } catch (e, s) {
+                            debugPrint('Failed to request google login: $e');
+                            debugPrintStack(stackTrace: s);
+                          }
                         },
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.center,
