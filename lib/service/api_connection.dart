@@ -9,7 +9,7 @@ import 'package:get_it/get_it.dart';
 import 'package:http/http.dart';
 
 class ApiConnection {
-  final _host = 'https://c230-47-53-15-21.eu.ngrok.io';
+  final _host = 'https://0506-47-53-15-21.eu.ngrok.io';
   late final _baseUrl = '$_host/cryptowallet-decimo/us-central1';
 
   final _client = Client();
@@ -83,9 +83,11 @@ class ApiConnection {
     required DateTime from,
     DateTime? to,
   }) async {
+    final user = FirebaseAuth.instance.currentUser;
+    assert(user != null);
     final realTo = to ?? DateTime.now();
     final uri = Uri.parse(
-      '$_baseUrl/getCoinHistory?tokenId=$tokenId&from=${from.millisecondsSinceEpoch ~/ 1000}&to=${realTo.millisecondsSinceEpoch ~/ 1000}',
+      '$_baseUrl/getCoinHistory?tokenId=$tokenId&from=${from.millisecondsSinceEpoch ~/ 1000}&to=${realTo.millisecondsSinceEpoch ~/ 1000}&userID=${user!.uid}',
     );
 
     final response = await _client.get(uri);

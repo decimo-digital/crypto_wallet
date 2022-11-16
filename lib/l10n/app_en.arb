@@ -27,5 +27,14 @@
     "tabHome": "Homepage",
     "swap": "Swap",
     "purchasesList": "Purchases",
-    "txtNoPurchasesYet": "No purchases yet"
+    "txtNoPurchasesYet": "No purchases yet",
+    "timeStartHelp": "Select the time from which you want to track the price",
+    "timeEndHelp": "Select the time until you want to track the price",
+    "priceChange": "From {from} to {to}",
+    "@priceChange": {
+        "placeholders": {
+            "from": {},
+            "to": {}
+        }
+    }
 }

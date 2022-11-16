@@ -87,4 +87,15 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get txtNoPurchasesYet => 'No purchases yet';
+
+  @override
+  String get timeStartHelp => 'Select the time from which you want to track the price';
+
+  @override
+  String get timeEndHelp => 'Select the time until you want to track the price';
+
+  @override
+  String priceChange(Object from, Object to) {
+    return 'From $from to $to';
+  }
 }

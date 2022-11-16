@@ -27,5 +27,14 @@
     "tabHome": "Homepage",
     "swap": "Scambia",
     "purchasesList": "Acquisti",
-    "txtNoPurchasesYet": "Ancora nessun acquisto"
+    "txtNoPurchasesYet": "Ancora nessun acquisto",
+    "timeStartHelp": "Seleziona l'ora di inizio per tracciare l'andamento della moneta",
+    "timeEndHelp": "Seleziona l'ora di fine per tracciare l'andamento della moneta",
+    "priceChange": "Dal {from} al {to}",
+    "@priceChange": {
+        "placeholders": {
+            "from": {},
+            "to": {}
+        }
+    }
 }

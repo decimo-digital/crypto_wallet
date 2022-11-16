@@ -21,6 +21,8 @@ TokenHistory _$TokenHistoryFromJson(Map<String, dynamic> json) {
 /// @nodoc
 mixin _$TokenHistory {
   List<TokenHistoryItem> get prices => throw _privateConstructorUsedError;
+  @JsonKey(name: 'since_last_purchase')
+  num? get sinceLastPurchase => throw _privateConstructorUsedError;
 
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
   @JsonKey(ignore: true)
@@ -34,7 +36,9 @@ abstract class $TokenHistoryCopyWith<$Res> {
           TokenHistory value, $Res Function(TokenHistory) then) =
       _$TokenHistoryCopyWithImpl<$Res, TokenHistory>;
   @useResult
-  $Res call({List<TokenHistoryItem> prices});
+  $Res call(
+      {List<TokenHistoryItem> prices,
+      @JsonKey(name: 'since_last_purchase') num? sinceLastPurchase});
 }
 
 /// @nodoc
@@ -51,12 +55,17 @@ class _$TokenHistoryCopyWithImpl<$Res, $Val extends TokenHistory>
   @override
   $Res call({
     Object? prices = null,
+    Object? sinceLastPurchase = freezed,
   }) {
     return _then(_value.copyWith(
       prices: null == prices
           ? _value.prices
           : prices // ignore: cast_nullable_to_non_nullable
               as List<TokenHistoryItem>,
+      sinceLastPurchase: freezed == sinceLastPurchase
+          ? _value.sinceLastPurchase
+          : sinceLastPurchase // ignore: cast_nullable_to_non_nullable
+              as num?,
     ) as $Val);
   }
 }
@@ -69,7 +78,9 @@ abstract class _$$_TokenHistoryCopyWith<$Res>
       __$$_TokenHistoryCopyWithImpl<$Res>;
   @override
   @useResult
-  $Res call({List<TokenHistoryItem> prices});
+  $Res call(
+      {List<TokenHistoryItem> prices,
+      @JsonKey(name: 'since_last_purchase') num? sinceLastPurchase});
 }
 
 /// @nodoc
@@ -84,12 +95,17 @@ class __$$_TokenHistoryCopyWithImpl<$Res>
   @override
   $Res call({
     Object? prices = null,
+    Object? sinceLastPurchase = freezed,
   }) {
     return _then(_$_TokenHistory(
       prices: null == prices
           ? _value._prices
           : prices // ignore: cast_nullable_to_non_nullable
               as List<TokenHistoryItem>,
+      sinceLastPurchase: freezed == sinceLastPurchase
+          ? _value.sinceLastPurchase
+          : sinceLastPurchase // ignore: cast_nullable_to_non_nullable
+              as num?,
     ));
   }
 }
@@ -97,7 +113,9 @@ class __$$_TokenHistoryCopyWithImpl<$Res>
 /// @nodoc
 @JsonSerializable()
 class _$_TokenHistory implements _TokenHistory {
-  const _$_TokenHistory({final List<TokenHistoryItem> prices = const []})
+  const _$_TokenHistory(
+      {final List<TokenHistoryItem> prices = const [],
+      @JsonKey(name: 'since_last_purchase') this.sinceLastPurchase})
       : _prices = prices;
 
   factory _$_TokenHistory.fromJson(Map<String, dynamic> json) =>
@@ -112,8 +130,12 @@ class _$_TokenHistory implements _TokenHistory {
   }
 
   @override
+  @JsonKey(name: 'since_last_purchase')
+  final num? sinceLastPurchase;
+
+  @override
   String toString() {
-    return 'TokenHistory(prices: $prices)';
+    return 'TokenHistory(prices: $prices, sinceLastPurchase: $sinceLastPurchase)';
   }
 
   @override
@@ -121,13 +143,15 @@ class _$_TokenHistory implements _TokenHistory {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
             other is _$_TokenHistory &&
-            const DeepCollectionEquality().equals(other._prices, _prices));
+            const DeepCollectionEquality().equals(other._prices, _prices) &&
+            (identical(other.sinceLastPurchase, sinceLastPurchase) ||
+                other.sinceLastPurchase == sinceLastPurchase));
   }
 
   @JsonKey(ignore: true)
   @override
-  int get hashCode =>
-      Object.hash(runtimeType, const DeepCollectionEquality().hash(_prices));
+  int get hashCode => Object.hash(runtimeType,
+      const DeepCollectionEquality().hash(_prices), sinceLastPurchase);
 
   @JsonKey(ignore: true)
   @override
@@ -144,7 +168,9 @@ class _$_TokenHistory implements _TokenHistory {
 }
 
 abstract class _TokenHistory implements TokenHistory {
-  const factory _TokenHistory({final List<TokenHistoryItem> prices}) =
+  const factory _TokenHistory(
+          {final List<TokenHistoryItem> prices,
+          @JsonKey(name: 'since_last_purchase') final num? sinceLastPurchase}) =
       _$_TokenHistory;
 
   factory _TokenHistory.fromJson(Map<String, dynamic> json) =
@@ -152,6 +178,9 @@ abstract class _TokenHistory implements TokenHistory {
 
   @override
   List<TokenHistoryItem> get prices;
+  @override
+  @JsonKey(name: 'since_last_purchase')
+  num? get sinceLastPurchase;
   @override
   @JsonKey(ignore: true)
   _$$_TokenHistoryCopyWith<_$_TokenHistory> get copyWith =>

@@ -8,6 +8,7 @@ part 'token_history.g.dart';
 class TokenHistory with _$TokenHistory {
   const factory TokenHistory({
     @Default([]) List<TokenHistoryItem> prices,
+    @JsonKey(name: 'since_last_purchase') num? sinceLastPurchase,
   }) = _TokenHistory;
 
   factory TokenHistory.fromJson(Map<String, dynamic> json) =>

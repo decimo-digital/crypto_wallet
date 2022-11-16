@@ -87,4 +87,15 @@ class AppLocalizationsIt extends AppLocalizations {
 
   @override
   String get txtNoPurchasesYet => 'Ancora nessun acquisto';
+
+  @override
+  String get timeStartHelp => 'Seleziona l\'ora di inizio per tracciare l\'andamento della moneta';
+
+  @override
+  String get timeEndHelp => 'Seleziona l\'ora di fine per tracciare l\'andamento della moneta';
+
+  @override
+  String priceChange(Object from, Object to) {
+    return 'Dal $from al $to';
+  }
 }

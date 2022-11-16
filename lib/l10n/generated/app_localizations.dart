@@ -260,6 +260,24 @@ abstract class AppLocalizations {
   /// In it, this message translates to:
   /// **'Ancora nessun acquisto'**
   String get txtNoPurchasesYet;
+
+  /// No description provided for @timeStartHelp.
+  ///
+  /// In it, this message translates to:
+  /// **'Seleziona l\'ora di inizio per tracciare l\'andamento della moneta'**
+  String get timeStartHelp;
+
+  /// No description provided for @timeEndHelp.
+  ///
+  /// In it, this message translates to:
+  /// **'Seleziona l\'ora di fine per tracciare l\'andamento della moneta'**
+  String get timeEndHelp;
+
+  /// No description provided for @priceChange.
+  ///
+  /// In it, this message translates to:
+  /// **'Dal {from} al {to}'**
+  String priceChange(Object from, Object to);
 }
 
 class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {
