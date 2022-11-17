@@ -314,7 +314,10 @@ class _CoinDetailsState extends State<CoinDetails> {
                     ValueListenableBuilder<TokenHistory?>(
                       valueListenable: _prices,
                       builder: (context, value, _) {
-                        if (value == null) return Container();
+                        if (value?.sinceLastPurchase == null) {
+                          return Container();
+                        }
+                        final loss = value!.sinceLastPurchase!;
                         return ListTile(
                           title: Text(
                             context.localizations.lblSinceLastPurchase,
@@ -324,12 +327,13 @@ class _CoinDetailsState extends State<CoinDetails> {
                                 .copyWith(color: Colors.white),
                           ),
                           subtitle: Text(
-                            NumberFormat.simpleCurrency()
-                                .format(num.parse(widget.price24h)),
+                            NumberFormat.simpleCurrency().format(loss),
                             style: Theme.of(context)
                                 .textTheme
                                 .bodyText1!
-                                .copyWith(color: Colors.green),
+                                .copyWith(
+                                  color: loss >= 0 ? Colors.green : Colors.red,
+                                ),
                           ),
                         );
                       },

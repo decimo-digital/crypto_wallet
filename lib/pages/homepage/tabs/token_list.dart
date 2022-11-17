@@ -118,6 +118,7 @@ class _TokenListState extends State<TokenList>
                     final currentToken = myTokensList[index];
                     return TokenCard(
                       token: currentToken,
+                      last24h: currentToken.price24h,
                       onTap: () async {
                         context.push(
                           context.namedLocation(

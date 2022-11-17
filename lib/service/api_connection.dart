@@ -9,7 +9,7 @@ import 'package:get_it/get_it.dart';
 import 'package:http/http.dart';
 
 class ApiConnection {
-  final _host = 'https://0506-47-53-15-21.eu.ngrok.io';
+  final _host = 'https://c180-47-53-15-21.eu.ngrok.io';
   late final _baseUrl = '$_host/cryptowallet-decimo/us-central1';
 
   final _client = Client();
