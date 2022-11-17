@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:io';
 
+import 'package:async/async.dart';
 import 'package:crypto_wallet/model/token_data_market.dart';
 import 'package:flutter/material.dart';
 import 'package:hive/hive.dart';
@@ -8,7 +9,8 @@ import 'package:hive/hive.dart';
 const _hiveBoxName = 'cryptowallet';
 
 enum _Keys {
-  tokens('token');
+  tokens('token'),
+  balances('balances');
 
   const _Keys(this.keyName);
 
@@ -35,16 +37,36 @@ class CacheService {
 
   Stream<List<Token>> getTokensStream() {
     assert(_initializationCompleter.isCompleted);
-    return _box
-        .watch(key: _Keys.tokens.keyName)
-        .map((e) => e.value)
-        .cast<List<Token>>();
+    return StreamGroup.merge<List<Token>>([
+      _box
+          .watch(key: _Keys.tokens.keyName)
+          .map((e) => e.value)
+          .cast<List<Token>>(),
+      Stream.value(
+        (_box.get(_Keys.tokens.keyName) as List?)?.cast<Token>() ?? [],
+      ),
+    ]);
   }
 
   Future<void> storeTokens(List<Token> tokens) {
     assert(_initializationCompleter.isCompleted);
     return _box.put(_Keys.tokens.keyName, tokens);
   }
+
+  Future<void> storeBalances(Map<String, dynamic> balances) {
+    assert(_initializationCompleter.isCompleted);
+    return _box.put(_Keys.balances.keyName, balances);
+  }
+
+  Stream<Map<String, dynamic>> getStreamedBalances() => StreamGroup.merge([
+        Stream.value(
+          _box.get(_Keys.balances.keyName) as Map<String, dynamic>? ??
+              <String, dynamic>{},
+        ),
+        _box
+            .watch(key: _Keys.balances.keyName)
+            .map((e) => e.value as Map<String, dynamic>? ?? {})
+      ]);
 
   Future<void> updateFavoriteToken(
     String tokenId, {

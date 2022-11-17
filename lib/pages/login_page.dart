@@ -1,6 +1,7 @@
 // ignore_for_file: use_build_context_synchronously
 
 import 'package:crypto_wallet/main.dart';
+import 'package:crypto_wallet/service/api_connection.dart';
 import 'package:crypto_wallet/utils/extensions.dart';
 import 'package:email_validator/email_validator.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -119,6 +120,7 @@ class _LoginPageState extends State<LoginPage> {
                             debugPrint(
                               'Logged in as ${credentials.user?.email}',
                             );
+                            GetIt.instance.get<ApiConnection>().getBalances();
                             context.goNamed(Routes.homepage.name);
                           } on FirebaseException catch (error) {
                             ScaffoldMessenger.of(context).showSnackBar(

@@ -40,6 +40,26 @@ class ApiConnection {
     _cacheService.storeTokens(tokens);
   }
 
+  Future<void> getBalances() async {
+    final user = FirebaseAuth.instance.currentUser;
+    assert(user != null);
+
+    debugPrint('Requesting balances');
+
+    final response = await _client
+        .get(Uri.parse('$_baseUrl/getBalances?userID=${user!.uid}'))
+        .onError((error, stackTrace) {
+      debugPrint('Failed to get user balances: $error');
+      return Response(jsonEncode({}), 500);
+    });
+
+    if (response.statusCode != 200) return;
+    debugPrint('Received balances: ${jsonDecode(response.body)}');
+    GetIt.instance
+        .get<CacheService>()
+        .storeBalances(jsonDecode(response.body) as Map<String, dynamic>);
+  }
+
   Future<void> setFavorite(String tokenId) async {
     final user = FirebaseAuth.instance.currentUser;
     assert(user != null);
