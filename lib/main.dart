@@ -1,3 +1,4 @@
+import 'package:crypto_wallet/firebase_options.dart';
 import 'package:crypto_wallet/l10n/generated/app_localizations.dart';
 import 'package:crypto_wallet/model/favorite_tokens.dart';
 import 'package:crypto_wallet/pages/coin_details.dart';
@@ -32,7 +33,9 @@ enum Routes {
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  await Firebase.initializeApp();
+  await Firebase.initializeApp(
+    options: DefaultFirebaseOptions.currentPlatform,
+  );
   Hive.deleteFromDisk();
   setLocaleMessages('it', ShortLookupItMessages());
   await Hive.initFlutter();

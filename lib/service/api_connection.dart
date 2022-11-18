@@ -9,7 +9,7 @@ import 'package:get_it/get_it.dart';
 import 'package:http/http.dart';
 
 class ApiConnection {
-  final _host = 'https://c180-47-53-15-21.eu.ngrok.io';
+  final _host = 'https://a90c-47-53-15-21.eu.ngrok.io';
   late final _baseUrl = '$_host/cryptowallet-decimo/us-central1';
 
   final _client = Client();
@@ -37,7 +37,64 @@ class ApiConnection {
     debugPrint(
       'Got ${tokens.where((t) => t.isFavorite ?? false).length} favorites',
     );
-    _cacheService.storeTokens(tokens);
+
+    _cacheService.storeTokens([
+      ...tokens.where((t) => t.isFavorite ?? false).toList()
+        ..sort((a, b) => a.name.compareTo(b.name)),
+      ...tokens.where((t) => !(t.isFavorite ?? false)).toList()
+        ..sort((a, b) => a.name.compareTo(b.name)),
+    ]);
+  }
+
+  Future<bool> purchaseToken({
+    required String purchasedCoin,
+    required String purchasingCoin,
+    required num amount,
+  }) async {
+    final user = FirebaseAuth.instance.currentUser;
+    assert(user != null);
+
+    final response = await _client.post(
+      Uri.parse('$_baseUrl/purchaseCoin'),
+      body: jsonEncode({
+        'userID': user!.uid,
+        'purchasedCoin': purchasedCoin,
+        'purchasingCoin': purchasingCoin,
+        'amount': amount,
+      }),
+      headers: {'Content-Type': 'application/json'},
+    ).onError((error, stackTrace) {
+      debugPrint('Failed to purchase coin: $error');
+      debugPrintStack(stackTrace: stackTrace);
+      return Response(jsonEncode({}), 500);
+    });
+    debugPrint('Received response ${response.statusCode}');
+    return response.statusCode == 200;
+  }
+
+  Future<num> convertCurrency({
+    required String sourceCoinId,
+    required String targetCoinId,
+    required num sourceCoinAmount,
+  }) async {
+    final response = await _client.post(
+      Uri.parse('$_baseUrl/convertCurrency'),
+      body: jsonEncode({
+        'sourceCurrencyId': sourceCoinId,
+        'sourceCurrencyAmount': sourceCoinAmount,
+        'targetCurrencyId': targetCoinId.toString(),
+      }),
+      headers: {'Content-Type': 'application/json'},
+    ).onError((error, stackTrace) {
+      debugPrint('Failed to convert currency: $error');
+      debugPrintStack(stackTrace: stackTrace);
+      return Response(jsonEncode({}), 500);
+    });
+
+    if (response.statusCode == 200) {
+      return (jsonDecode(response.body) as Map<String, dynamic>)['amount'];
+    }
+    return 0;
   }
 
   Future<void> getBalances() async {
@@ -55,9 +112,9 @@ class ApiConnection {
 
     if (response.statusCode != 200) return;
     debugPrint('Received balances: ${jsonDecode(response.body)}');
-    GetIt.instance
-        .get<CacheService>()
-        .storeBalances(jsonDecode(response.body) as Map<String, dynamic>);
+    GetIt.instance.get<CacheService>().storeBalances(
+          (jsonDecode(response.body) as Map<String, dynamic>)['balances'],
+        );
   }
 
   Future<void> setFavorite(String tokenId) async {
