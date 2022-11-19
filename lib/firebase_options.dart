@@ -17,10 +17,7 @@ import 'package:flutter/foundation.dart'
 class DefaultFirebaseOptions {
   static FirebaseOptions get currentPlatform {
     if (kIsWeb) {
-      throw UnsupportedError(
-        'DefaultFirebaseOptions have not been configured for web - '
-        'you can reconfigure this by running the FlutterFire CLI again.',
-      );
+      return web;
     }
     switch (defaultTargetPlatform) {
       case TargetPlatform.android:
@@ -45,6 +42,16 @@ class DefaultFirebaseOptions {
         );
     }
   }
+
+  static const FirebaseOptions web = FirebaseOptions(
+    apiKey: 'AIzaSyAa2PI83RMk9sNkyZb7JZNvc-JkMTy3ctk',
+    appId: '1:781840244242:web:eda1a1336c81adfad802cb',
+    messagingSenderId: '781840244242',
+    projectId: 'cryptowallet-decimo',
+    authDomain: 'cryptowallet-decimo.firebaseapp.com',
+    storageBucket: 'cryptowallet-decimo.appspot.com',
+    measurementId: 'G-PQY1MXLG23',
+  );
 
   static const FirebaseOptions android = FirebaseOptions(
     apiKey: 'AIzaSyAxGfnYFHvQXuFjsSIv4l2aX8HoD2Damx4',

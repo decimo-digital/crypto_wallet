@@ -1,6 +1,13 @@
+import 'dart:convert';
+
+import 'package:crypto/crypto.dart';
+import 'package:crypto_wallet/main.dart';
+import 'package:crypto_wallet/service/api_connection.dart';
 import 'package:crypto_wallet/utils/extensions.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:get_it/get_it.dart';
+import 'package:go_router/go_router.dart';
 
 class DecentralizedSignin extends StatefulWidget {
   const DecentralizedSignin({super.key});
@@ -81,7 +88,19 @@ class _DecentralizedSigninState extends State<DecentralizedSignin> {
               child: Align(
                 alignment: Alignment.bottomCenter,
                 child: ElevatedButton(
-                  onPressed: () {},
+                  onPressed: () async {
+                    final words = _words.value;
+                    final uid = base64Encode(
+                      sha256.convert(utf8.encode(words.join())).bytes,
+                    );
+
+                    final response = await GetIt.instance
+                        .get<ApiConnection>()
+                        .validateUid(uid);
+                    if (response && mounted) {
+                      context.goNamed(Routes.homepage.name);
+                    }
+                  },
                   child: Text(context.localizations.btnContinue),
                 ),
               ),

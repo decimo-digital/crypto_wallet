@@ -2,10 +2,12 @@ import 'package:crypto_wallet/main.dart';
 import 'package:crypto_wallet/pages/homepage/tabs/purchases_list.dart';
 import 'package:crypto_wallet/pages/homepage/tabs/swap_tokens.dart';
 import 'package:crypto_wallet/pages/homepage/tabs/token_list.dart';
+import 'package:crypto_wallet/service/api_connection.dart';
 import 'package:crypto_wallet/utils/extensions.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:get_it/get_it.dart';
 import 'package:go_router/go_router.dart';
 
 class Homepage extends StatefulWidget {
@@ -22,7 +24,9 @@ class _HomepageState extends State<Homepage> with TickerProviderStateMixin {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('${FirebaseAuth.instance.currentUser!.email}'),
+        title: Text(
+          '${FirebaseAuth.instance.currentUser?.email ?? GetIt.instance.get<ApiConnection>().userId}',
+        ),
         actions: [
           Padding(
             padding: const EdgeInsets.only(right: 5),

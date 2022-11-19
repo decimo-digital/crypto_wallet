@@ -11,21 +11,27 @@ import 'package:get_it/get_it.dart';
 import 'package:http/http.dart';
 
 class ApiConnection {
-  final _host = 'https://7806-47-53-15-21.eu.ngrok.io';
+  final _host = 'https://7388-47-53-15-21.eu.ngrok.io';
   late final _baseUrl = '$_host/cryptowallet-decimo/us-central1';
+
+  late String? _userId;
+
+  String? get userId => _userId;
 
   final _client = Client();
 
   final _cacheService = GetIt.instance.get<CacheService>();
 
   Future<void> getTokens() async {
-    final user = FirebaseAuth.instance.currentUser;
-    assert(user != null);
+    if (_userId == null) {
+      final user = FirebaseAuth.instance.currentUser;
+      assert(user != null);
+    }
 
     debugPrint('Requesting coins');
 
     final response = await _client
-        .get(Uri.parse('$_baseUrl/getCoins?userId=${user!.uid}'))
+        .get(Uri.parse('$_baseUrl/getCoins?userId=$_userId'))
         .onError((error, stackTrace) {
       debugPrint('Failed to get coins: $error');
       return Response(jsonEncode({}), 500);
@@ -48,12 +54,62 @@ class ApiConnection {
     ]);
   }
 
+  Future<bool> createUser(String userId) async {
+    debugPrint('Creating anonymous user');
+
+    final response = await _client.post(
+      Uri.parse('$_baseUrl/createUser'),
+      body: jsonEncode({'userId': userId}),
+      headers: {'Content-Type': 'application/json'},
+    ).onError((error, stackTrace) {
+      debugPrint('Failed to create user: $error');
+      return Response(jsonEncode({}), 500);
+    });
+
+    if (response.statusCode == 200) {
+      debugPrint('Successfully created user $userId');
+      _userId = userId;
+      return true;
+    } else {
+      debugPrint(
+        'Failed to create user: ${(jsonDecode(response.body) as Map)['message']}',
+      );
+      return false;
+    }
+  }
+
+  Future<bool> validateUid(String userId) async {
+    debugPrint('Validating anonymous uid');
+
+    final response = await _client.post(
+      Uri.parse('$_baseUrl/validateUid'),
+      body: jsonEncode({'userId': userId}),
+      headers: {'Content-Type': 'application/json'},
+    ).onError((error, stackTrace) {
+      debugPrint('Failed to create user: $error');
+      return Response(jsonEncode({}), 500);
+    });
+
+    if (response.statusCode == 200) {
+      debugPrint('User $userId exists');
+      _userId = userId;
+      return true;
+    } else {
+      debugPrint(
+        'Failed to validate uid: ${(jsonDecode(response.body) as Map)['message']}',
+      );
+      return false;
+    }
+  }
+
   Future<void> getPurchases() async {
-    final user = FirebaseAuth.instance.currentUser;
-    assert(user != null);
+    if (_userId == null) {
+      final user = FirebaseAuth.instance.currentUser;
+      assert(user != null);
+    }
 
     final response = await _client
-        .get(Uri.parse('$_baseUrl/getPurchases?userID=${user!.uid}'))
+        .get(Uri.parse('$_baseUrl/getPurchases?userID=$_userId'))
         .onError((error, stackTrace) {
       debugPrint('Failed to get purchases: $error');
       debugPrintStack(stackTrace: stackTrace);
@@ -95,13 +151,15 @@ class ApiConnection {
     required String purchasingCoin,
     required num amount,
   }) async {
-    final user = FirebaseAuth.instance.currentUser;
-    assert(user != null);
+    if (_userId == null) {
+      final user = FirebaseAuth.instance.currentUser;
+      assert(user != null);
+    }
 
     final response = await _client.post(
       Uri.parse('$_baseUrl/purchaseCoin'),
       body: jsonEncode({
-        'userID': user!.uid,
+        'userID': _userId,
         'purchasedCoin': purchasedCoin,
         'purchasingCoin': purchasingCoin,
         'amount': amount,
@@ -142,13 +200,15 @@ class ApiConnection {
   }
 
   Future<void> getBalances() async {
-    final user = FirebaseAuth.instance.currentUser;
-    assert(user != null);
+    if (_userId == null) {
+      final user = FirebaseAuth.instance.currentUser;
+      assert(user != null);
+    }
 
     debugPrint('Requesting balances');
 
     final response = await _client
-        .get(Uri.parse('$_baseUrl/getBalances?userID=${user!.uid}'))
+        .get(Uri.parse('$_baseUrl/getBalances?userID=$_userId'))
         .onError((error, stackTrace) {
       debugPrint('Failed to get user balances: $error');
       return Response(jsonEncode({}), 500);
@@ -162,13 +222,15 @@ class ApiConnection {
   }
 
   Future<void> setFavorite(String tokenId) async {
-    final user = FirebaseAuth.instance.currentUser;
-    assert(user != null);
+    if (_userId == null) {
+      final user = FirebaseAuth.instance.currentUser;
+      assert(user != null);
+    }
 
     final response = await _client.post(
       Uri.parse('$_baseUrl/setUserFavorite'),
       body: {
-        'userID': user!.uid,
+        'userID': _userId,
         'tokenId': tokenId,
       },
     );
@@ -181,13 +243,15 @@ class ApiConnection {
   }
 
   Future<void> removeFavorite(String tokenId) async {
-    final user = FirebaseAuth.instance.currentUser;
-    assert(user != null);
+    if (_userId == null) {
+      final user = FirebaseAuth.instance.currentUser;
+      assert(user != null);
+    }
 
     final response = await _client.delete(
       Uri.parse('$_baseUrl/deleteUserFavorite'),
       body: {
-        'userID': user!.uid,
+        'userID': _userId,
         'tokenId': tokenId,
       },
     );
@@ -204,11 +268,14 @@ class ApiConnection {
     required DateTime from,
     DateTime? to,
   }) async {
-    final user = FirebaseAuth.instance.currentUser;
-    assert(user != null);
+    if (_userId == null) {
+      final user = FirebaseAuth.instance.currentUser;
+      assert(user != null);
+    }
+
     final realTo = to ?? DateTime.now();
     final uri = Uri.parse(
-      '$_baseUrl/getCoinHistory?tokenId=$tokenId&from=${from.millisecondsSinceEpoch ~/ 1000}&to=${realTo.millisecondsSinceEpoch ~/ 1000}&userID=${user!.uid}',
+      '$_baseUrl/getCoinHistory?tokenId=$tokenId&from=${from.millisecondsSinceEpoch ~/ 1000}&to=${realTo.millisecondsSinceEpoch ~/ 1000}&userID=$_userId',
     );
 
     final response = await _client.get(uri);
