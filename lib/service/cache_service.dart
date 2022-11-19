@@ -2,6 +2,8 @@ import 'dart:async';
 import 'dart:io';
 
 import 'package:async/async.dart';
+import 'package:crypto_wallet/model/purchase/purchase.dart';
+import 'package:crypto_wallet/model/purchase/transaction.dart';
 import 'package:crypto_wallet/model/token_data_market.dart';
 import 'package:flutter/material.dart';
 import 'package:hive/hive.dart';
@@ -10,6 +12,7 @@ const _hiveBoxName = 'cryptowallet';
 
 enum _Keys {
   tokens('token'),
+  purchases('purchases'),
   balances('balances');
 
   const _Keys(this.keyName);
@@ -25,6 +28,8 @@ class CacheService {
   Future<void> init() async {
     assert(!_initializationCompleter.isCompleted);
     Hive.registerAdapter<Token>(TokenAdapter(1));
+    Hive.registerAdapter<Purchase>(PurchaseAdapter(2));
+    Hive.registerAdapter<Transaction>(TransactionAdapter(3));
     _box =
         await Hive.openBox<Object>(_hiveBoxName).onError((error, stackTrace) {
       debugPrint('Failed to open box: $error');
@@ -33,6 +38,10 @@ class CacheService {
     });
 
     _initializationCompleter.complete();
+  }
+
+  Future<void> deleteBox() {
+    return _box.deleteAll(_Keys.values.map((k) => k.keyName));
   }
 
   Stream<List<Token>> getTokensStream() {
@@ -53,6 +62,11 @@ class CacheService {
     return _box.put(_Keys.tokens.keyName, tokens);
   }
 
+  Future<void> storePurchases(List<Purchase> purchases) {
+    assert(_initializationCompleter.isCompleted);
+    return _box.put(_Keys.purchases.keyName, purchases);
+  }
+
   Future<void> storeBalances(Map<String, dynamic> balances) {
     assert(_initializationCompleter.isCompleted);
     return _box.put(_Keys.balances.keyName, balances);
@@ -60,12 +74,21 @@ class CacheService {
 
   Stream<Map<String, dynamic>> getStreamedBalances() => StreamGroup.merge([
         Stream.value(
-          _box.get(_Keys.balances.keyName) as Map<String, dynamic>? ??
-              <String, dynamic>{},
+          (_box.get(_Keys.balances.keyName) as Map? ?? <dynamic, dynamic>{})
+              .cast(),
         ),
         _box
             .watch(key: _Keys.balances.keyName)
             .map((e) => e.value as Map<String, dynamic>? ?? {})
+      ]);
+
+  Stream<List<Purchase>> getStreamedPurchases() => StreamGroup.merge([
+        Stream.value(
+          (_box.get(_Keys.purchases.keyName) as List? ?? []).cast(),
+        ),
+        _box
+            .watch(key: _Keys.purchases.keyName)
+            .map((e) => e.value as List<Purchase>? ?? [])
       ]);
 
   Future<void> updateFavoriteToken(

@@ -1,5 +1,7 @@
 import 'dart:convert';
 
+import 'package:crypto_wallet/model/purchase/purchase.dart';
+import 'package:crypto_wallet/model/purchase/transaction.dart';
 import 'package:crypto_wallet/model/token_data_market.dart';
 import 'package:crypto_wallet/model/token_history.dart';
 import 'package:crypto_wallet/service/cache_service.dart';
@@ -9,7 +11,7 @@ import 'package:get_it/get_it.dart';
 import 'package:http/http.dart';
 
 class ApiConnection {
-  final _host = 'https://a90c-47-53-15-21.eu.ngrok.io';
+  final _host = 'https://7806-47-53-15-21.eu.ngrok.io';
   late final _baseUrl = '$_host/cryptowallet-decimo/us-central1';
 
   final _client = Client();
@@ -44,6 +46,48 @@ class ApiConnection {
       ...tokens.where((t) => !(t.isFavorite ?? false)).toList()
         ..sort((a, b) => a.name.compareTo(b.name)),
     ]);
+  }
+
+  Future<void> getPurchases() async {
+    final user = FirebaseAuth.instance.currentUser;
+    assert(user != null);
+
+    final response = await _client
+        .get(Uri.parse('$_baseUrl/getPurchases?userID=${user!.uid}'))
+        .onError((error, stackTrace) {
+      debugPrint('Failed to get purchases: $error');
+      debugPrintStack(stackTrace: stackTrace);
+      return Response(jsonEncode({}), 500);
+    });
+
+    debugPrint('Get purchases returned: ${response.statusCode}');
+
+    if (response.statusCode == 200) {
+      final map = jsonDecode(response.body) as Map<String, dynamic>;
+      if (map.isNotEmpty) {
+        final purchases = map['purchases'] as Map<String, dynamic>;
+        final earnings = map['earnings'] as Map<String, dynamic>;
+
+        final purchasesStored = <Purchase>[];
+        for (var element in purchases.entries) {
+          final coinId = element.key;
+
+          purchasesStored.add(
+            Purchase(
+              coinId: coinId,
+              transactions: (element.value as List)
+                  .map((e) => Transaction.fromJson(e as Map<String, dynamic>))
+                  .toList(),
+              earnings: earnings[coinId],
+            ),
+          );
+        }
+
+        GetIt.instance.get<CacheService>().storePurchases(purchasesStored);
+      }
+    }
+
+    debugPrint('Received response ${response.statusCode}');
   }
 
   Future<bool> purchaseToken({

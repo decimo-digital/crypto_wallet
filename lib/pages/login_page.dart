@@ -128,7 +128,6 @@ class _LoginPageState extends State<LoginPage> {
                             );
                             debugPrint('$error');
                           }
-
                           context
                               .go(context.namedLocation(Routes.homepage.name));
                         }

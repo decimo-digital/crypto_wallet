@@ -51,6 +51,7 @@ class _SwapTokensState extends State<SwapTokens> {
   @override
   void initState() {
     super.initState();
+    _connection.getBalances();
     _targetToken.addListener(() {
       if (_sourceToken.value != null &&
           _sourceTokenController.text.isNotEmpty) {
@@ -81,12 +82,11 @@ class _SwapTokensState extends State<SwapTokens> {
                 ValueListenableBuilder<Token?>(
                   valueListenable: _sourceToken,
                   builder: (context, value, _) {
-                    debugPrint(
-                      'Getting balance of ${value?.id} from $balances',
-                    );
                     if (tokens.isNotEmpty) {
-                      _sourceToken.value ??=
-                          tokens.firstWhere((t) => balances.containsKey(t.id));
+                      _sourceToken.value ??= tokens
+                              .any((t) => balances.containsKey(t.id))
+                          ? tokens.firstWhere((t) => balances.containsKey(t.id))
+                          : null;
                     }
 
                     return TextField(
@@ -111,8 +111,9 @@ class _SwapTokensState extends State<SwapTokens> {
                         helperText:
                             value == null || !balances.containsKey(value.id)
                                 ? null
-                                : NumberFormat.currency(symbol: value.symbol)
-                                    .format(balances[value.id]),
+                                : NumberFormat.currency(
+                                    customPattern: '${value.symbol} ###.##',
+                                  ).format(balances[value.id]),
                         prefixIcon: Padding(
                           padding: const EdgeInsets.symmetric(horizontal: 10),
                           child: Row(
@@ -272,8 +273,9 @@ class _SwapTokensState extends State<SwapTokens> {
                         helperText:
                             value == null || !balances.containsKey(value.id)
                                 ? null
-                                : NumberFormat.currency(symbol: value.symbol)
-                                    .format(balances[value.id]),
+                                : NumberFormat.currency(
+                                    customPattern: '${value.symbol} ###.##',
+                                  ).format(balances[value.id]),
                         prefixIcon: Padding(
                           padding: const EdgeInsets.symmetric(horizontal: 10),
                           child: Row(
@@ -435,7 +437,10 @@ class _SwapTokensState extends State<SwapTokens> {
                               messenger.showMaterialBanner(
                                 MaterialBanner(
                                   content: Text(
-                                    'Successfully purchased ${NumberFormat.currency(symbol: _targetToken.value!.symbol).format(num.parse(_targetTokenController.text))}',
+                                    'Successfully purchased ${NumberFormat.currency(
+                                      customPattern:
+                                          '${_targetToken.value!.symbol} ###.##',
+                                    ).format(num.parse(_targetTokenController.text))}',
                                   ),
                                   actions: [
                                     TextButton(

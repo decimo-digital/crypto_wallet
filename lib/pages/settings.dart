@@ -1,7 +1,9 @@
 import 'package:crypto_wallet/main.dart';
+import 'package:crypto_wallet/service/cache_service.dart';
 import 'package:crypto_wallet/utils/extensions.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:get_it/get_it.dart';
 import 'package:go_router/go_router.dart';
 
 class Settings extends StatefulWidget {
@@ -64,7 +66,8 @@ class _SettingsState extends State<Settings> {
               child: Align(
                 alignment: Alignment.bottomCenter,
                 child: ElevatedButton(
-                  onPressed: () {
+                  onPressed: () async {
+                    GetIt.instance.get<CacheService>().deleteBox();
                     FirebaseAuth.instance.signOut();
                     context.goNamed(Routes.login.name);
                   },
