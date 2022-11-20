@@ -176,6 +176,11 @@ class _LoginPageState extends State<LoginPage> {
                             debugPrint(
                               'logged in with ${credential.user?.uid}',
                             );
+                            if (credential.user!.uid.isNotEmpty) {
+                              context.go(
+                                context.namedLocation(Routes.homepage.name),
+                              );
+                            }
                           } catch (e, s) {
                             debugPrint('Failed to request google login: $e');
                             debugPrintStack(stackTrace: s);
