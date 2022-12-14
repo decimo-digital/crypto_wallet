@@ -11,6 +11,13 @@ import 'package:get_it/get_it.dart';
 import 'package:http/http.dart';
 
 class ApiConnection {
+  @visibleForTesting
+  ApiConnection.mocked(Client mockClient, String userId)
+      : _client = mockClient,
+        _userId = userId;
+
+  ApiConnection();
+
   final _host = 'https://7388-47-53-15-21.eu.ngrok.io';
   late final _baseUrl = '$_host/cryptowallet-decimo/us-central1';
 
@@ -18,7 +25,8 @@ class ApiConnection {
 
   String? get userId => _userId;
 
-  final _client = Client();
+  // ignore: prefer_final_fields
+  var _client = Client();
 
   final _cacheService = GetIt.instance.get<CacheService>();
 

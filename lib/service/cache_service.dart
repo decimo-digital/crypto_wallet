@@ -21,17 +21,23 @@ enum _Keys {
 }
 
 class CacheService {
-  late final Box<Object> _box;
+  late Box<Object> _box;
 
-  final _initializationCompleter = Completer();
+  var _initializationCompleter = Completer();
 
-  Future<void> init() async {
+  Future<void> init([String? path]) async {
     assert(!_initializationCompleter.isCompleted);
-    Hive.registerAdapter<Token>(TokenAdapter(1));
-    Hive.registerAdapter<Purchase>(PurchaseAdapter(2));
-    Hive.registerAdapter<Transaction>(TransactionAdapter(3));
-    _box =
-        await Hive.openBox<Object>(_hiveBoxName).onError((error, stackTrace) {
+    if (!Hive.isAdapterRegistered(1)) {
+      Hive.registerAdapter<Token>(TokenAdapter(1));
+    }
+    if (!Hive.isAdapterRegistered(2)) {
+      Hive.registerAdapter<Purchase>(PurchaseAdapter(2));
+    }
+    if (!Hive.isAdapterRegistered(3)) {
+      Hive.registerAdapter<Transaction>(TransactionAdapter(3));
+    }
+    _box = await Hive.openBox<Object>(_hiveBoxName, path: path)
+        .onError((error, stackTrace) {
       debugPrint('Failed to open box: $error');
       debugPrintStack(stackTrace: stackTrace);
       exit(1);
@@ -40,8 +46,10 @@ class CacheService {
     _initializationCompleter.complete();
   }
 
-  Future<void> deleteBox() {
-    return _box.deleteAll(_Keys.values.map((k) => k.keyName));
+  Future<void> deleteBox() async {
+    await _box.deleteAll(_Keys.values.map((k) => k.keyName));
+    _initializationCompleter = Completer();
+    return;
   }
 
   Stream<List<Token>> getTokensStream() {
