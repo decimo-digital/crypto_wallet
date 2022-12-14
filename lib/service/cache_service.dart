@@ -48,6 +48,7 @@ class CacheService {
 
   Future<void> deleteBox() async {
     await _box.deleteAll(_Keys.values.map((k) => k.keyName));
+    await _box.deleteFromDisk();
     _initializationCompleter = Completer();
     return;
   }

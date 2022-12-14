@@ -22,7 +22,7 @@ void main() {
   setUpAll(() async {
     GetIt.instance.registerSingletonAsync<CacheService>(() async {
       final service = CacheService();
-      await service.init('.');
+      await service.init('./randomTest');
       return service;
     });
     await GetIt.I.isReady<CacheService>();
